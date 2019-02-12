@@ -1,7 +1,6 @@
 
 import Vue from 'vue'
-import App from './listApp'
-
+import App from './calendarApp'
 
 
 new Vue({
