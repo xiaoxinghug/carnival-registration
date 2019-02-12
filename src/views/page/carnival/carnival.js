@@ -1,7 +1,6 @@
 
 import Vue from 'vue'
-import App from './calendarApp'
-
+import App from './carnivalApp'
 
 new Vue({
   render: h => h(App)
