@@ -61,7 +61,8 @@
           <p style="color:red;">提醒：若是其他学校的孩子，不能参与本次专场活动</p>
           <p>报名时间：即日起至2月25日</p>
           <p>在活动期间，每个孩子可报名2场活动（非同一个时间段），每场活动同一时段仅限20个小朋友。
-★活动最终解释权归哈哈炫动卫视所有</p>
+</p>
+<p>★活动最终解释权归哈哈炫动卫视所有</p>
         </div>
          <div class="detail-btn">
 
@@ -71,10 +72,10 @@
       <div class="ticket" v-if="currentIndex == 2">
         <ul>
           <li>
-
+              <img src="./assets/ticket1.png">
           </li>
           <li class="colorBg">
-            
+                          <img src="./assets/ticket2.png">
           </li>
         </ul>
       </div>
@@ -113,35 +114,40 @@ export default {
 
 body {
   background-color: #fbf9fe;
-  font-size:12px;
+  // font-size:1;
 }
 .active{
   opacity: 1 !important;
 }
 .tabActive{
-  height: 45px !important;
+  height: 0.45rem !important;
 }
 .mainWarp{
   .ticket{
     li{
-      height:110px;
-       background:url(./assets/ticket1.png) no-repeat center;
-        background-size:contain;
-        margin-top:20px;
+      height:1.05rem;
+      width:90%;
+      margin:0 auto;
+      //  background:url(./assets/ticket1.png) no-repeat center;
+      //   background-size:contain;
+        margin-top:0.2rem;
     }
     .colorBg{
-             background:url(./assets/ticket2.png) no-repeat center;
-                     background-size:contain;
+            //  background:url(./assets/ticket2.png) no-repeat center;
+            //          background-size:contain;
 
     }
   }
   .rule{
-    padding:30px;
+    padding:0.3rem;
+    p{
+      line-height:0.22rem;
+    }
     .detail-btn{
-      width:100px;
-      height:30px;
+      width:1.6rem;
+      height:0.4rem;
       margin:0 auto;
-      margin-top:30px;
+      margin-top:0.3rem;
        background:url(./assets/detail_btn.png) no-repeat center;
         background-size:contain;
     }
@@ -153,7 +159,7 @@ body {
   }
   .step{
     display: flex;
-    margin-top:15px;
+    margin-top:0.15rem;
     .item{
       flex:1;
       text-align:center;
@@ -169,27 +175,27 @@ body {
         // margin-top:5px;
       }
       p{
-        margin-top:5px;
+        margin-top:0.05rem;
         text-align:center;
       }
     }
   }
   .list{
       li{
-        height:85px;
+        height:0.85rem;
         background:url(./assets/border.png) no-repeat center;
         background-size:contain;
                 overflow: hidden;
-        margin-top:10px;
+        margin-top:0.1rem;
         // background: #e1e1e1;
         p{
-          font-size:10px;
+          font-size:0.12rem;
           color:#cfcfcf;
-                  padding:0px 10px;
+                  padding:0px 0.1rem;
 
         }
         .title{
-          padding:0px 10px;
+          padding:0px 0.1rem;
           display: flex;
           span{
             flex:1;
@@ -197,12 +203,12 @@ body {
         }
       }
       .list-content{
-        padding:10px;
+        padding:0.1rem;
       }
     }
   .bottom{
     position:fixed;
-    height:45px;
+    height:0.45rem;
     width:100%;
     bottom:0px;
     left:0px;
@@ -212,17 +218,17 @@ body {
   .bottom-content{
     display:flex;
     .left{
-          height:40px;
+          height:0.4rem;
     background:url(./assets/left.png) no-repeat center;
 background-size:contain;
     }
      .center{
-          height:40px;
+          height:0.4rem;
     background:url(./assets/center.png) no-repeat center;
 background-size:contain;
     }
     .right{
-          height:40px;
+          height:0.4rem;
     background:url(./assets/right.png) no-repeat center;
 background-size:contain;
     }
