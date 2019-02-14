@@ -239,6 +239,7 @@ export default {
   methods: {
     tabClick(index){
       this.currentIndex = index;
+      this.step = 1;
     },
     toStep(index){
       setTimeout(()=>{
