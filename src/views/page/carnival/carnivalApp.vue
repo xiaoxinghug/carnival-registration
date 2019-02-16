@@ -27,7 +27,7 @@
                 @click="activeClick(list,index)">
                   <div class="list-content">
                       <div class="title">
-                        <span>{{list.title}}</span>
+                        <span style="font-size:0.15rem;">{{list.title}}</span>
                         <span style="text-align:right;">{{list.ptype}}</span>
                       </div>
                       <div class="text">
@@ -169,7 +169,7 @@
           <p>友情提示：报名前请仔细阅读活动介绍，个别活动需要父母参与</p>
           <p style="color:red;">提醒：若是其他学校的孩子，不能参与本次专场活动</p>
           <p>报名时间：即日起至2月25日</p>
-          <p>在活动期间，每个孩子可报名2场活动（非同一个时间段），每场活动同一时段仅限20个小朋友。
+          <p>在活动期间，<span style="color:red">每个孩子可报名2场活动</span>（非同一个时间段），每场活动同一时段仅限20个小朋友。
            </p>
           <p>★活动最终解释权归哈哈炫动卫视所有</p>
         </div>
@@ -179,6 +179,7 @@
       </div>
       <!--我的门票-->
       <div class="ticket" v-if="currentIndex == 2">
+        <div style="text-align: center;margin-top: 1rem;" v-if="registerInfor.length ==0">您还没有预约任何项目，赶快报名吧！</div>
         <ul v-if="registerInfor.length>0">
           <li>
               <div class="text">
@@ -236,7 +237,7 @@ Vue.use(Field);
 Vue.use(Popup);
 Vue.use(Toast);
 Vue.use(DatetimePicker);
-import Lib from 'assets/js/Lib';
+// import Lib from 'assets/js/Lib';
 export default {
   components: {
     
@@ -250,7 +251,7 @@ export default {
      pgid:"",
      cid:"",
      step:1,
-     uid:2,
+     uid:1,
      showTime:false,
      programData:[],
      clist:[],
@@ -265,7 +266,7 @@ export default {
      yzcode:"",
      btnActive:true,
      codeText:"获取验证码",
-     registerInfor:null,
+     registerInfor:[],
     }
   },
   mounted(){
@@ -277,6 +278,7 @@ export default {
         this.getClist();
         this.doWxLogin();
         this.getRegister();
+        this.onShare();
     },
     cancelTime(){
       this.showTime = false
@@ -286,6 +288,50 @@ export default {
       this.stepTwoTitle = list.title;
       this.pgid = list.id;
     },
+    onShare(){
+       fetchJsonp(`http://hhxd.0797wx.cn/index.php/home/api/doShare`)
+        .then((response) =>{
+          return response.json()
+        }).then((json) =>{
+            let _config ={
+               appId: json.appId,
+               timestamp: json.timestamp,
+               nonceStr: json.nonceStr,
+               signature: json.signature,
+               jsApiList: [
+                    'onMenuShareTimeline',
+                    'onMenuShareAppMessage',
+                    'onMenuShareQQ',
+                    'onMenuShareWeibo'
+                  ]
+                }
+                wx.config(_config);
+                wx.ready(function () {
+                  console.log('wx 注册成功')
+                    let _shareConfig={
+                      title:'“哈哈我喜欢”紫薇幼儿园专场', // 分享标题
+                      desc:'好嗨哟~哈哈喊你来“游园”！9大主题活动，精彩玩不停！  这个做简介吧' , // 分享描述
+                      link: location.href, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                      imgUrl: 'http://hhxd.0797wx.cn/public/img/sharelogo.jpg', // 分享图标
+                      // type: 'link', // 分享类型,music、video或link，不填默认为link
+                      success: function () {
+                        console.log('分享成功')
+                      },
+                      cancel: function () {
+                      }
+                    }
+                    wx.onMenuShareAppMessage(_shareConfig)
+                    wx.onMenuShareTimeline(_shareConfig)
+              });
+              wx.error(function(res){
+                console.log(res)
+              });
+          // this.registerInfor = json
+        }).catch(function(ex) {
+          console.log('parsing failed', ex)
+        })
+      
+    },
     getRegister(){
       fetchJsonp(`http://hhxd.0797wx.cn/index.php/home/api/myRegister?uid=${this.uid}`)
         .then((response) =>{
@@ -294,15 +340,15 @@ export default {
           this.registerInfor = json
         }).catch(function(ex) {
           console.log('parsing failed', ex)
-        })
-
+        });
     },
     doWxLogin(){
       fetchJsonp(`http://hhxd.0797wx.cn/index.php/home/api/doWxLogin?backurl=${location.href}`)
         .then((response) =>{
           return response.json()
         }).then((json) =>{
-          console.log(json)
+          // console.log(json)
+          this.uid = json.uid;
         }).catch(function(ex) {
           console.log('parsing failed', ex)
         })
@@ -400,7 +446,7 @@ export default {
     },
     getCode(){
       if(!/^1[3456789]\d{9}$/.test(this.mobile)){
-        Toast('请输入正确的联系号码~')
+        Toast('请输入正确的联系电话~')
         return;
       }
       if(!this.btnActive){
@@ -446,6 +492,10 @@ export default {
     },
     toStep(index){
       if(index == 2){
+        if(this.registerInfor.length ==2){
+           Toast('您已经报名2场活动哦~')
+           return
+        }
          if(this.currentListIndex > this.programData.length){
            Toast('请先选择活动')
            return
@@ -470,7 +520,7 @@ export default {
 
 body {
   background-color: #fbf9fe;
-  // font-size:1;
+  font-size:0.12rem;
 }
 .active{
   opacity: 1 !important;
@@ -574,10 +624,12 @@ body {
       width:100%;
       text-align:center;
       margin-top:0.25rem;
-      font-size:0.13rem;
+      font-size:0.12rem;
       .title{
         padding-left:0.6rem;
-        padding-bottom:0.05rem;
+            padding-top: 0.03rem;
+
+        // padding-bottom:0.05rem;
       }
       p{
         padding-left:0.90rem;
