@@ -1,7 +1,7 @@
 <template>
   <div class="mainWarp">
       <!--头部-->
-	    <div class="bg"><img src="./assets/bg.jpeg" alt=""/></div>
+	    <div class="bg"><img src="//hhxd.0797wx.cn/public/static/img/bg.jpeg" alt=""/></div>
       <!--内容-->
       <div class="content" v-if="currentIndex == 1">
         <div class="step-1"  v-if="step ==1">
@@ -187,7 +187,7 @@
                     <p><span>活动名称：{{registerInfor[0].ptitle}}</span></p>
                     <p><span>场次时间：{{registerInfor[0].cdate}}</span></p>
               </div>
-              <img src="./assets/ticket1.png">
+              <img src="//hhxd.0797wx.cn/public/static/img/ticket1.png">
           </li>
           <li v-if="registerInfor.length>1">
              <div class="text">
@@ -195,7 +195,7 @@
                     <p><span>活动名称：{{registerInfor[1].ptitle}}</span></p>
                     <p><span>场次时间：{{registerInfor[1].cdate}}</span></p>
               </div>
-             <img src="./assets/ticket2.png">
+             <img src="//hhxd.0797wx.cn/public/static/img/ticket2.png">
           </li>
         </ul>
       </div>
@@ -251,7 +251,7 @@ export default {
      pgid:"",
      cid:"",
      step:1,
-     uid:1,
+     uid:"",
      showTime:false,
      programData:[],
      clist:[],
@@ -270,15 +270,29 @@ export default {
     }
   },
   mounted(){
-    this.init();
+     this.uid = sessionStorage.getItem('uid') || 5
+     this.init();
   },
   methods: {
     init(){
         this.getProgramData();
-        this.getClist();
-        this.doWxLogin();
-        this.getRegister();
-        this.onShare();
+        // console.log(this.uid)
+        if(this.uid == ""){
+          let tId = setInterval(() => {
+              this.uid = sessionStorage.getItem('uid') || ""
+              if (this.uid != "") {
+                  clearInterval(tId);
+                  this.getClist();
+                  this.getRegister();
+              }
+          }, 10);
+        }else{
+           this.getClist();
+           this.getRegister();
+        }
+        
+        // this.doWxLogin();
+        // this.onShare();
     },
     cancelTime(){
       this.showTime = false
@@ -288,50 +302,50 @@ export default {
       this.stepTwoTitle = list.title;
       this.pgid = list.id;
     },
-    onShare(){
-       fetchJsonp(`http://hhxd.0797wx.cn/index.php/home/api/doShare`)
-        .then((response) =>{
-          return response.json()
-        }).then((json) =>{
-            let _config ={
-               appId: json.appId,
-               timestamp: json.timestamp,
-               nonceStr: json.nonceStr,
-               signature: json.signature,
-               jsApiList: [
-                    'onMenuShareTimeline',
-                    'onMenuShareAppMessage',
-                    'onMenuShareQQ',
-                    'onMenuShareWeibo'
-                  ]
-                }
-                wx.config(_config);
-                wx.ready(function () {
-                  console.log('wx 注册成功')
-                    let _shareConfig={
-                      title:'“哈哈我喜欢”紫薇幼儿园专场', // 分享标题
-                      desc:'好嗨哟~哈哈喊你来“游园”！9大主题活动，精彩玩不停！  这个做简介吧' , // 分享描述
-                      link: location.href, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                      imgUrl: 'http://hhxd.0797wx.cn/public/img/sharelogo.jpg', // 分享图标
-                      // type: 'link', // 分享类型,music、video或link，不填默认为link
-                      success: function () {
-                        console.log('分享成功')
-                      },
-                      cancel: function () {
-                      }
-                    }
-                    wx.onMenuShareAppMessage(_shareConfig)
-                    wx.onMenuShareTimeline(_shareConfig)
-              });
-              wx.error(function(res){
-                console.log(res)
-              });
-          // this.registerInfor = json
-        }).catch(function(ex) {
-          console.log('parsing failed', ex)
-        })
+    // onShare(){
+    //    fetchJsonp(`http://hhxd.0797wx.cn/index.php/home/api/doShare`)
+    //     .then((response) =>{
+    //       return response.json()
+    //     }).then((json) =>{
+    //         let _config ={
+    //            appId: json.appId,
+    //            timestamp: json.timestamp,
+    //            nonceStr: json.nonceStr,
+    //            signature: json.signature,
+    //            jsApiList: [
+    //                 'onMenuShareTimeline',
+    //                 'onMenuShareAppMessage',
+    //                 'onMenuShareQQ',
+    //                 'onMenuShareWeibo'
+    //               ]
+    //             }
+    //             wx.config(_config);
+    //             wx.ready(function () {
+    //               console.log('wx 注册成功')
+    //                 let _shareConfig={
+    //                   title:'“哈哈我喜欢”紫薇幼儿园专场', // 分享标题
+    //                   desc:'好嗨哟~哈哈喊你来“游园”！9大主题活动，精彩玩不停！  这个做简介吧' , // 分享描述
+    //                   link: location.href, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+    //                   imgUrl: 'http://hhxd.0797wx.cn/public/img/sharelogo.jpg', // 分享图标
+    //                   // type: 'link', // 分享类型,music、video或link，不填默认为link
+    //                   success: function () {
+    //                     console.log('分享成功')
+    //                   },
+    //                   cancel: function () {
+    //                   }
+    //                 }
+    //                 wx.onMenuShareAppMessage(_shareConfig)
+    //                 wx.onMenuShareTimeline(_shareConfig)
+    //           });
+    //           wx.error(function(res){
+    //             console.log(res)
+    //           });
+    //       // this.registerInfor = json
+    //     }).catch(function(ex) {
+    //       console.log('parsing failed', ex)
+    //     })
       
-    },
+    // },
     getRegister(){
       fetchJsonp(`http://hhxd.0797wx.cn/index.php/home/api/myRegister?uid=${this.uid}`)
         .then((response) =>{
@@ -341,18 +355,6 @@ export default {
         }).catch(function(ex) {
           console.log('parsing failed', ex)
         });
-    },
-    doWxLogin(){
-      fetchJsonp(`http://hhxd.0797wx.cn/index.php/home/api/doWxLogin?backurl=${location.href}`)
-        .then((response) =>{
-          return response.json()
-        }).then((json) =>{
-          // console.log(json)
-          this.uid = json.uid;
-        }).catch(function(ex) {
-          console.log('parsing failed', ex)
-        })
-
     },
     confirmTime(val){
       this.showTime = false
@@ -386,7 +388,6 @@ export default {
       return ret;
     },
     doRegister(){
-
       let obj={
         // Uid:this.uid,
         pgid:this.pgid || 1,
@@ -423,12 +424,13 @@ export default {
         .then((response) =>{
           return response.json()
         }).then((json) =>{
-          console.log(json)
           // this.programData = json
           if(json.code !=0){
             Toast(json.message)
           }else{
             Toast('报名成功！')
+            this.currentIndex = 2;
+            this.getRegister();
           }
         }).catch(function(ex) {
           console.log('parsing failed', ex)
@@ -480,7 +482,7 @@ export default {
       fetchJsonp(`http://hhxd.0797wx.cn/index.php/home/api/getClist?uid=${this.uid}`).then((response) =>{
           return response.json()
         }).then((json) =>{
-          console.log(json)
+          // console.log(json)
           this.clist = json
         }).catch(function(ex) {
           console.log('parsing failed', ex)
@@ -489,6 +491,28 @@ export default {
     tabClick(index){
       this.currentIndex = index;
       this.step = 1;
+      // console.log(ind)
+      // if(index == 2){
+                // this.getRegister();
+
+      // }
+    },
+    register(){
+      fetchJsonp(`//hhxd.0797wx.cn/index.php/home/api/doRegister?uid=${this.uid}`)
+        .then((response) =>{
+          return response.json()
+        }).then((json) =>{
+          // this.programData = json
+          if(json.code !=0){
+            Toast(json.message)
+          }else{
+            Toast('报名成功！')
+            this.currentIndex = 2;
+            this.getRegister();
+          }
+        }).catch(function(ex) {
+          console.log('parsing failed', ex)
+        });
     },
     toStep(index){
       if(index == 2){
@@ -505,6 +529,10 @@ export default {
         if(!this.cid){
            Toast('请先选择场次')
            return
+        }
+        if(this.registerInfor.length == 1){
+            this.register();
+            return;
         }
       }
       setTimeout(()=>{
@@ -531,6 +559,9 @@ body {
 .van-radio__icon--checked .van-icon{
   border-color: #dd497b !important; 
     background-color: #dd497b !important;
+}
+.van-field__control:disabled{
+  color:#323233 !important;
 }
 .van-radio__icon .van-icon{
       border: 1px solid #dd497b !important;
@@ -633,6 +664,7 @@ body {
       }
       p{
         padding-left:0.90rem;
+        margin:2px;
       }
     }
 
