@@ -62,10 +62,13 @@
             <div class="scene">
                    <div class="tip">您选择了 <span style="color:#dd497b;">{{stepTwoTitle}}</span>项目，请选择参加场次</div>
                    <van-radio-group v-model="cid">
-                      <div class="cell" v-for="(list,index) in clist" :key="index">
-                         <span class="left"><van-radio :name="list.id"></van-radio></span> 
-                         <span class="center">第 {{list.id}} 场：{{list.cdate}}</span>
-                         <span class="right">剩余{{list.nums}}人</span>
+                      <div v-for="(list,index) in clist" :key="index">
+                         <div class="cell" v-if="list.id > 0">
+                            <span class="left"><van-radio :name="list.id" v-if="list.nums != 0"></van-radio></span> 
+                            <span class="center">第 {{list.id}} 场：{{list.cdate}}</span>
+                            <span class="right" v-if="list.nums !=0">剩余{{list.nums}}人</span>
+                            <span class="right" v-if="list.nums == 0">已满</span>
+                         </div>
                       </div>
                     </van-radio-group>
             </div>
@@ -162,13 +165,24 @@
       </div>
       <!--预约规则-->
       <div class="rule" v-if="currentIndex == 0">
-        <div class="text">
-          <p>活动时间：2019年3月8日</p>
-          <p>活动地点：上海紫薇实验幼儿园</p>
-          <p>招募人群：仅限紫薇实验幼儿园在读孩子（小班至大班）</p>
+        <div class="text" v-if="showRule">
+          <p>活动时间：2019年3月7日</p>
+          <p>活动地点：上海紫薇实验幼儿园浦北园区</p>
+          <p>招募人群：仅限紫薇实验幼儿园浦北园区在读孩子（小班至大班）</p>
           <p>友情提示：报名前请仔细阅读活动介绍，个别活动需要父母参与</p>
           <p style="color:red;">提醒：若是其他学校的孩子，不能参与本次专场活动</p>
-          <p>报名时间：即日起至2月25日</p>
+          <p>报名时间：即日起至3月5日</p>
+          <p>在活动期间，<span style="color:red">每个孩子可报名2场活动</span>（非同一个时间段），每场活动同一时段仅限20个小朋友。
+           </p>
+          <p>★活动最终解释权归哈哈炫动卫视所有</p>
+        </div>
+        <div class="text" v-if="!showRule">
+          <p>活动时间：2019年3月8日</p>
+          <p>活动地点：上海紫薇实验幼儿园桂平园区</p>
+          <p>招募人群：仅限紫薇实验幼儿园桂平园区在读孩子（小班至大班）</p>
+          <p>友情提示：报名前请仔细阅读活动介绍，个别活动需要父母参与</p>
+          <p style="color:red;">提醒：若是其他学校的孩子，不能参与本次专场活动</p>
+          <p>报名时间：即日起至3月5日</p>
           <p>在活动期间，<span style="color:red">每个孩子可报名2场活动</span>（非同一个时间段），每场活动同一时段仅限20个小朋友。
            </p>
           <p>★活动最终解释权归哈哈炫动卫视所有</p>
@@ -183,7 +197,7 @@
         <ul v-if="registerInfor.length>0">
           <li>
               <div class="text">
-                   <div class="title"><span>{{registerInfor[0].jzname}}</span> <span>{{registerInfor[0].mobile}}</span></div>
+                   <div class="title"><span>{{registerInfor[0].bbname}}</span> <span>{{registerInfor[0].mobile}}</span></div>
                     <p><span>活动名称：{{registerInfor[0].ptitle}}</span></p>
                     <p><span>场次时间：{{registerInfor[0].cdate}}</span></p>
               </div>
@@ -191,7 +205,7 @@
           </li>
           <li v-if="registerInfor.length>1">
              <div class="text">
-                   <div class="title"><span>{{registerInfor[1].jzname}}</span> <span>{{registerInfor[1].mobile}}</span></div>
+                   <div class="title"><span>{{registerInfor[1].bbname}}</span> <span>{{registerInfor[1].mobile}}</span></div>
                     <p><span>活动名称：{{registerInfor[1].ptitle}}</span></p>
                     <p><span>场次时间：{{registerInfor[1].cdate}}</span></p>
               </div>
@@ -222,6 +236,13 @@
 </template>
 
 <script>
+const currentUrl = location.href;
+let url = ""
+if(/api1/.test(currentUrl)){
+   url = '//hhxd.0797wx.cn/index.php/home/api1'
+}else {
+   url = '//hhxd.0797wx.cn/index.php/home/api'
+}
 import fetchJsonp from 'fetch-jsonp';
 import { RadioGroup, Radio,Field,DatetimePicker,Popup,Toast} from 'vant';
 import Vue from 'vue';
@@ -231,6 +252,7 @@ import 'vant/lib/field/style';
 import 'vant/lib/popup/style';
 import 'vant/lib/toast/style';
 import 'vant/lib/datetime-picker/style';
+import { WSAEHOSTUNREACH } from 'constants';
 Vue.use(RadioGroup);
 Vue.use(Radio);
 Vue.use(Field);
@@ -244,7 +266,7 @@ export default {
   },
   data () {
     return {
-     currentIndex:1,
+     currentIndex:0,
      currentListIndex:20,
      stepTwoTitle:"",
      value:"",
@@ -267,11 +289,20 @@ export default {
      btnActive:true,
      codeText:"获取验证码",
      registerInfor:[],
+     showRule:false
+    }
+  },
+  created(){
+    if(/api1/.test(currentUrl)){
+      this.showRule = true;
+    }else {
+      this.showRule = false;
     }
   },
   mounted(){
-     this.uid = sessionStorage.getItem('uid') || 5
+     this.uid = sessionStorage.getItem('uid') || ""
      this.init();
+
   },
   methods: {
     init(){
@@ -282,12 +313,12 @@ export default {
               this.uid = sessionStorage.getItem('uid') || ""
               if (this.uid != "") {
                   clearInterval(tId);
-                  this.getClist();
+                  // this.getClist();
                   this.getRegister();
               }
           }, 10);
         }else{
-           this.getClist();
+          //  this.getClist();
            this.getRegister();
         }
         
@@ -302,52 +333,8 @@ export default {
       this.stepTwoTitle = list.title;
       this.pgid = list.id;
     },
-    // onShare(){
-    //    fetchJsonp(`http://hhxd.0797wx.cn/index.php/home/api/doShare`)
-    //     .then((response) =>{
-    //       return response.json()
-    //     }).then((json) =>{
-    //         let _config ={
-    //            appId: json.appId,
-    //            timestamp: json.timestamp,
-    //            nonceStr: json.nonceStr,
-    //            signature: json.signature,
-    //            jsApiList: [
-    //                 'onMenuShareTimeline',
-    //                 'onMenuShareAppMessage',
-    //                 'onMenuShareQQ',
-    //                 'onMenuShareWeibo'
-    //               ]
-    //             }
-    //             wx.config(_config);
-    //             wx.ready(function () {
-    //               console.log('wx 注册成功')
-    //                 let _shareConfig={
-    //                   title:'“哈哈我喜欢”紫薇幼儿园专场', // 分享标题
-    //                   desc:'好嗨哟~哈哈喊你来“游园”！9大主题活动，精彩玩不停！  这个做简介吧' , // 分享描述
-    //                   link: location.href, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-    //                   imgUrl: 'http://hhxd.0797wx.cn/public/img/sharelogo.jpg', // 分享图标
-    //                   // type: 'link', // 分享类型,music、video或link，不填默认为link
-    //                   success: function () {
-    //                     console.log('分享成功')
-    //                   },
-    //                   cancel: function () {
-    //                   }
-    //                 }
-    //                 wx.onMenuShareAppMessage(_shareConfig)
-    //                 wx.onMenuShareTimeline(_shareConfig)
-    //           });
-    //           wx.error(function(res){
-    //             console.log(res)
-    //           });
-    //       // this.registerInfor = json
-    //     }).catch(function(ex) {
-    //       console.log('parsing failed', ex)
-    //     })
-      
-    // },
     getRegister(){
-      fetchJsonp(`http://hhxd.0797wx.cn/index.php/home/api/myRegister?uid=${this.uid}`)
+      fetchJsonp(`${url}/myRegister?uid=${this.uid}`)
         .then((response) =>{
           return response.json()
         }).then((json) =>{
@@ -420,7 +407,7 @@ export default {
         return;
       }
       const data = this.parseData(obj);
-      fetchJsonp(`http://hhxd.0797wx.cn/index.php/home/api/doRegister?uid=${this.uid}${data}`)
+      fetchJsonp(`${url}/doRegister?uid=${this.uid}${data}`)
         .then((response) =>{
           return response.json()
         }).then((json) =>{
@@ -428,7 +415,11 @@ export default {
           if(json.code !=0){
             Toast(json.message)
           }else{
-            Toast('报名成功！')
+            if(this.registerInfor.length ==0){
+             Toast('报名成功！您可以再报预约一场')
+            }else{
+               Toast('报名成功！')
+            }
             this.currentIndex = 2;
             this.getRegister();
           }
@@ -437,7 +428,7 @@ export default {
         });
     },
     getProgramData(){
-      fetchJsonp('http://hhxd.0797wx.cn/index.php/home/api/getProgramData')
+      fetchJsonp(`${url}/getProgramData`)
         .then((response) =>{
           return response.json()
         }).then((json) =>{
@@ -454,7 +445,7 @@ export default {
       if(!this.btnActive){
         return;
       }
-      fetchJsonp(`http://hhxd.0797wx.cn/index.php/home/api/getMobileCode?mobile=${this.mobile}`)
+      fetchJsonp(`${url}/getMobileCode?mobile=${this.mobile}`)
         .then((response) =>{
           return response.json()
         }).then((json) =>{
@@ -479,7 +470,7 @@ export default {
       }, 1000);
     },
     getClist(){
-      fetchJsonp(`http://hhxd.0797wx.cn/index.php/home/api/getClist?uid=${this.uid}`).then((response) =>{
+      fetchJsonp(`${url}/getClist?uid=${this.uid}&pgid=${this.pgid}`).then((response) =>{
           return response.json()
         }).then((json) =>{
           // console.log(json)
@@ -491,25 +482,24 @@ export default {
     tabClick(index){
       this.currentIndex = index;
       this.step = 1;
-      // console.log(ind)
-      // if(index == 2){
-                // this.getRegister();
-
-      // }
     },
-    register(){
-      fetchJsonp(`//hhxd.0797wx.cn/index.php/home/api/doRegister?uid=${this.uid}`)
+    getUserInfo(){
+      fetchJsonp(`${url}/getUserInfo?uid=${this.uid}`)
         .then((response) =>{
           return response.json()
         }).then((json) =>{
-          // this.programData = json
-          if(json.code !=0){
-            Toast(json.message)
-          }else{
-            Toast('报名成功！')
-            this.currentIndex = 2;
-            this.getRegister();
+          if(json.code == 0){
+              this.bbname = json.bbname;
+              this.jzname = json.jzname;
+              this.address = json.address;
+              this.mobile = json.mobile;
+              this.birthday = json.birthday;
+              this.sex = json.sex;
+              this.yzcode = json.yzcode;
           }
+        // if(val == 0){
+          this.doRegister()
+        // }
         }).catch(function(ex) {
           console.log('parsing failed', ex)
         });
@@ -524,6 +514,7 @@ export default {
            Toast('请先选择活动')
            return
          }
+       this.getClist();
       }
       if(index == 3){
         if(!this.cid){
@@ -531,7 +522,7 @@ export default {
            return
         }
         if(this.registerInfor.length == 1){
-            this.register();
+            this.getUserInfo();
             return;
         }
       }
@@ -633,7 +624,9 @@ body {
       margin-top:0.15rem;
       display:flex;
               font-size:0.14rem;
-
+      .left{
+        width:0.2rem;
+      }
       .center{
         flex:1;
         text-align:center;
