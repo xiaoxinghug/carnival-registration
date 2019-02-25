@@ -165,31 +165,31 @@
       </div>
       <!--预约规则-->
       <div class="rule" v-if="currentIndex == 0">
-        <div class="text" v-if="showRule">
-          <p>活动时间：2019年3月7日</p>
-          <p>活动地点：上海紫薇实验幼儿园浦北园区</p>
-          <p>招募人群：仅限紫薇实验幼儿园浦北园区在读孩子（小班至大班）</p>
-          <p>友情提示：报名前请仔细阅读活动介绍，个别活动需要父母参与</p>
+        <div class="text">
+          <p>活动主题：紫薇”饭米粒”秀, 家庭总动员</p>
+          <p>活动地点：上海紫薇实验幼儿园桂平园区/浦北园区</p>
+          <p>招募人群：仅限紫薇实验幼儿园桂平园区、浦北园区在读孩子（小班至大班）</p>
+          <p>活动时间：2019年3月8日8:00-9:30/10:00-11:30</p>
+          <p>
+            桂平园区场次时间
+            8：00-8：40
+            8：50-9：30
+          </p>
+          <p>
+            浦北园区场次时间
+            10：00-10：40
+            10：50-11：30
+          </p>
+          <p>友情提示：报名前请仔细阅读活动介绍，个别活动需要父母参与。</p>
           <p style="color:red;">提醒：若是其他学校的孩子，不能参与本次专场活动</p>
-          <p>报名时间：3月2日</p>
-          <p>在活动期间，<span style="color:red">每个孩子可报名2场活动</span>（非同一个时间段），每场活动同一时段仅限20个小朋友。
+          <p>桂平园区报名时间：3月2日9：00-24：00</p>
+           <p>  浦北园区报名时间：3月3日9：00-24：00</p>
+          <p>桂平园区报名规则：<span style="color:red">每个孩子可报名2场活动</span>（非同一个时间段），每场活动同一时段仅限20个小朋友。请家长看清楚时间和校区再进行报名，一经报名后无法退换，请谨慎选择。
+           </p>
+           <p>浦北园区报名规则：<span style="color:red">每个孩子可报名2场活动</span>（非同一个时间段），每场活动同一时段仅限23个小朋友。请家长看清楚时间和校区再进行报名，一经报名后无法退换，请谨慎选择。
            </p>
           <p>★活动最终解释权归哈哈炫动卫视所有</p>
         </div>
-        <div class="text" v-if="!showRule">
-          <p>活动时间：2019年3月8日</p>
-          <p>活动地点：上海紫薇实验幼儿园桂平园区</p>
-          <p>招募人群：仅限紫薇实验幼儿园桂平园区在读孩子（小班至大班）</p>
-          <p>友情提示：报名前请仔细阅读活动介绍，个别活动需要父母参与</p>
-          <p style="color:red;">提醒：若是其他学校的孩子，不能参与本次专场活动</p>
-          <p>报名时间：3月2日</p>
-          <p>在活动期间，<span style="color:red">每个孩子可报名2场活动</span>（非同一个时间段），每场活动同一时段仅限20个小朋友。
-           </p>
-          <p>★活动最终解释权归哈哈炫动卫视所有</p>
-        </div>
-         <div class="detail-btn">
-
-         </div>
       </div>
       <!--我的门票-->
       <div class="ticket" v-if="currentIndex == 2">
@@ -288,15 +288,15 @@ export default {
      btnActive:true,
      codeText:"获取验证码",
      registerInfor:[],
-     showRule:false
+    //  showRule:false
     }
   },
   created(){
-    if(/api1/.test(currentUrl)){
-      this.showRule = true;
-    }else {
-      this.showRule = false;
-    }
+    // if(/api1/.test(currentUrl)){
+    //   this.showRule = true;
+    // }else {
+    //   this.showRule = false;
+    // }
   },
   mounted(){
      this.uid = sessionStorage.getItem('uid') || ""
@@ -672,6 +672,8 @@ body {
   }
   .rule{
     padding:0.3rem;
+        margin-bottom: 0.5rem;
+
     p{
       line-height:0.22rem;
     }
@@ -679,7 +681,7 @@ body {
       width:1.6rem;
       height:0.4rem;
       margin:0 auto;
-      margin-top:0.3rem;
+      margin-bottom:0.3rem;
        background:url(./assets/detail_btn.png) no-repeat center;
         background-size:contain;
     }

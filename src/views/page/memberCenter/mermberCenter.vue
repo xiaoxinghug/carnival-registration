@@ -353,6 +353,7 @@ export default {
         }).then((json) =>{
           this.loading = false;
           this.showregInforToast = false;
+          this.hasReg =true;
           if(json.code ==0){
              this.showregToast = true;
              if(!!json.adpoint){
