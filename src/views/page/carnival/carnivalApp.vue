@@ -171,7 +171,7 @@
           <p>招募人群：仅限紫薇实验幼儿园浦北园区在读孩子（小班至大班）</p>
           <p>友情提示：报名前请仔细阅读活动介绍，个别活动需要父母参与</p>
           <p style="color:red;">提醒：若是其他学校的孩子，不能参与本次专场活动</p>
-          <p>报名时间：即日起至3月5日</p>
+          <p>报名时间：3月2日</p>
           <p>在活动期间，<span style="color:red">每个孩子可报名2场活动</span>（非同一个时间段），每场活动同一时段仅限20个小朋友。
            </p>
           <p>★活动最终解释权归哈哈炫动卫视所有</p>
@@ -182,7 +182,7 @@
           <p>招募人群：仅限紫薇实验幼儿园桂平园区在读孩子（小班至大班）</p>
           <p>友情提示：报名前请仔细阅读活动介绍，个别活动需要父母参与</p>
           <p style="color:red;">提醒：若是其他学校的孩子，不能参与本次专场活动</p>
-          <p>报名时间：即日起至3月5日</p>
+          <p>报名时间：3月2日</p>
           <p>在活动期间，<span style="color:red">每个孩子可报名2场活动</span>（非同一个时间段），每场活动同一时段仅限20个小朋友。
            </p>
           <p>★活动最终解释权归哈哈炫动卫视所有</p>
@@ -252,7 +252,6 @@ import 'vant/lib/field/style';
 import 'vant/lib/popup/style';
 import 'vant/lib/toast/style';
 import 'vant/lib/datetime-picker/style';
-import { WSAEHOSTUNREACH } from 'constants';
 Vue.use(RadioGroup);
 Vue.use(Radio);
 Vue.use(Field);
@@ -369,9 +368,7 @@ export default {
               ret += "&" + key + "=" + encodeURIComponent(data[key]);
           }
       }
-      // 加个时间戳，防止缓存
-      // ret += "&_time=" + this.now();
-      // ret = ret.substr(1);
+     
       return ret;
     },
     doRegister(){
