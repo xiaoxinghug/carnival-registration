@@ -5,9 +5,10 @@
             <img src="//hhxd.0797wx.cn/Public/member/static/img/top.png" alt="图片加载中..."/>
             <div class="top-content absolute">
                <div class="head absolute"> 
-                  <img :src="headerImg"  alt="头像加载失败..."/>
+                  <img :src="headerImg"  alt="头像加载中..."/>
                   <div class="name">{{name}}</div>
-                  <div class="infor" @click="showregInforToast = true">完善信息，赢20积分</div>
+                  <div class="infor" @click="showregInforToast = true" v-if="!hasReg">完善信息，赢20积分</div>
+                  <div class="infor" @click="showregInforToast = true" v-if="hasReg">{{name}}您好 点击这里，修改个人信息</div>
                </div>
             </div>
             <div class="bottom absolute">
@@ -36,7 +37,8 @@
       <van-popup v-model="showregInforToast">
         <div class="regInfor">
           <div class="close" @click="close"><img src="./assets/close.png" alt="图片加载中..."/></div>
-          <h5>哈炫亲子会员注册表</h5>
+          <h5 v-if="!hasReg">哈炫亲子会员注册</h5>
+          <h5 v-if="hasReg">哈炫亲子会员修改</h5>
            <div class="input-list">
                    <!-- <van-cell-group> -->
                       <van-field v-model="cname" placeholder="请输入孩子姓名" />
@@ -104,8 +106,11 @@
                   </div>
                </div>
            
-                <div class="sure-btn" @click="doRegister">
+                <div class="sure-btn" @click="doRegister" v-if="!hasReg">
                   确定注册
+                </div>
+                <div class="sure-btn" @click="doRegister" v-if="hasReg">
+                  确定修改
                 </div>
         </div>
       </van-popup>
@@ -191,6 +196,7 @@ export default {
      showTime: false,
      currentDateTime:"",
      codeText:"获取验证码",
+     cname:"",
      jzname:"",//家长姓名
      school:"",//学校
      nj:"",//年级
@@ -208,7 +214,8 @@ export default {
      point:'0',
      cansign:1,
      btnActive:true,
-     loading:false
+     loading:false,
+     hasReg:false
     }
   },
   created(){
@@ -272,6 +279,14 @@ export default {
         if(json.code == 0){
           this.point = json.point;
           this.cansign = json.cansign;
+           this.cname = json.cname;
+           this.jzname = json.jzname;
+           this.school = json.school;
+           this.address = json.address;
+           this.mobile = json.mobile;
+           this.birthday = json.birthday;
+           this.sex = json.sex;
+          this.hasReg = true;
         }
       }).catch(function(ex) {
         this.loading = false;
@@ -336,9 +351,9 @@ export default {
         .then((response) =>{
           return response.json()
         }).then((json) =>{
-          this.loading = false
+          this.loading = false;
+          this.showregInforToast = false;
           if(json.code ==0){
-             this.showregInforToast = false;
              this.showregToast = true;
              if(!!json.adpoint){
                this.point = json.adpoint;
@@ -557,8 +572,9 @@ img{
       }
       .infor{
         color:#fff;
+        font-size:0.1rem;
         background: #fbd03d;
-        padding:2px 0.08rem;
+        padding:3px 0.05rem;
         border-radius: 4px;
         margin-top:0.1rem;
       }
