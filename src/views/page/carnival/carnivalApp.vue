@@ -318,24 +318,21 @@ export default {
   methods: {
     init(){
         this.getProgramData();
-        this.getTime();
+        this.getServerTime();
         // console.log(this.uid)
-        if(this.uid == ""){
-          let tId = setInterval(() => {
-              this.uid = sessionStorage.getItem('uid') || ""
-              if (this.uid != "") {
-                  clearInterval(tId);
-                  // this.getClist();
-                  this.getRegister();
-              }
-          }, 10);
-        }else{
-          //  this.getClist();
-           this.getRegister();
-        }
-        
-        // this.doWxLogin();
-        // this.onShare();
+      
+         if(this.uid == ""){
+              let tId = setInterval(() => {
+                  this.uid = sessionStorage.getItem('uid') || ""
+                  if (this.uid != "") {
+                      clearInterval(tId);
+                      this.getRegister();
+                  }
+              }, 10);
+            }else{
+              this.getRegister();
+            }
+
     },
     cancelTime(){
       this.showTime = false
@@ -350,10 +347,10 @@ export default {
      if(/api1/.test(currentUrl)){
          time_end = new Date("2019/3/3 09:00:00");
       }else {
-        console.log(1)
+
          time_end = new Date("2019/3/2 09:00:00");
       }
-      // let time_end = new Date('2019/3/8 00:00:00');
+      // let time_end = new Date('2019/3/8 00:00:00')
           time_end = time_end.getTime();
           this.show_time(time_end)
     },
@@ -385,19 +382,21 @@ export default {
           // 显示时间
           this.distance_time = `${int_day}天${int_hour}时${int_minute}分${int_second}秒`
         }else{
+            
           this.showDistanceTime = false;
           // return;
-          clearTimeout(timerId)
+          clearTimeout(timerId);
         }
        },1000);
     },
-    getTime(){
+    getServerTime(){
       fetchJsonp(`${timeUrl}`)
         .then((response) =>{
           return response.json()
         }).then((json) =>{
           if(json.code ==0){
-             this.time = new Date(json.time).getTime();
+             let Time = json.time.replace(/-/g,'/');
+             this.time = new Date(Time).getTime();
              this.getDistanceTime();
           }
           // this.registerInfor = json
