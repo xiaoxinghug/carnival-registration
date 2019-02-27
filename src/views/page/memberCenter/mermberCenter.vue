@@ -76,9 +76,11 @@
                </div>
 
                 <div class="input-list" @click="showTime = true">
-                   <!-- <van-cell-group> -->
                       <van-field v-model="birthday" disabled placeholder="请输入孩子生日" />
-                    <!-- </van-cell-group> -->
+               </div>
+               
+               <div class="input-list" @click="showArea = true">
+                      <van-field v-model="area" disabled placeholder="请选择所在区域" />
                </div>
 
                <div class="input-list">
@@ -155,6 +157,23 @@
           />
     </van-popup>
 
+    <!--地区选择-->
+    <van-popup v-model="showArea" position="bottom">
+        <!-- <van-datetime-picker
+            v-model="currentDateTime"
+            type="date"
+            :min-date="minDate"
+            :max-date="maxDate"
+            
+          /> -->
+          <van-area 
+           :area-list="areaList" 
+            @cancel="cancelArea"
+            @confirm="confirmArea" />
+
+    </van-popup>
+
+
    <div class="memberCenter-loading" v-show="loading">
          <van-loading color="#dd497b"/>
    </div>
@@ -165,7 +184,8 @@
 const currentUrl = location.href;
 let url = "//hhxd.0797wx.cn/index.php/home/user"
 import fetchJsonp from 'fetch-jsonp';
-import { RadioGroup, Radio,Field,DatetimePicker,Popup,Toast,Dialog,Loading} from 'vant';
+import {city} from './city.js'
+import { RadioGroup, Radio,Field,DatetimePicker,Popup,Toast,Dialog,Loading,Area} from 'vant';
 import Vue from 'vue';
 import 'vant/lib/radio/style';
 import 'vant/lib/radio-group/style';
@@ -183,6 +203,7 @@ Vue.use(Toast);
 Vue.use(DatetimePicker);
 Vue.use(Dialog);
 Vue.use(Loading);
+Vue.use(Area)
 // import Lib from 'assets/js/Lib';
 export default {
   components: {
@@ -194,6 +215,7 @@ export default {
      showregToast: false,
      showregInforToast: false,
      showTime: false,
+     showArea:false,
      currentDateTime:"",
      codeText:"获取验证码",
      cname:"",
@@ -206,6 +228,7 @@ export default {
      mobile:"",
      birthday:"",
      sex:"",
+     area:"",
      uid:"",
      headerImg:"",
      maxDate:new Date(),
@@ -215,7 +238,8 @@ export default {
      cansign:1,
      btnActive:true,
      loading:false,
-     hasReg:false
+     hasReg:false,
+     areaList:[]
     }
   },
   created(){
@@ -238,6 +262,15 @@ export default {
           this.getUserInfor();
             // this.uid = sessionStorage.getItem('uid') || ""
         }
+      this.areaList = city
+    },
+    cancelArea(){
+      this.showArea = false;
+    },
+    confirmArea(val){
+      this.showArea = false;
+      this.area = val[2].name;
+      // console.log(val)
     },
     cancelTime(){
       this.showTime = false
@@ -286,6 +319,7 @@ export default {
            this.mobile = json.mobile;
            this.birthday = json.birthday;
            this.sex = json.sex;
+           this.area = json.area;
           this.hasReg = true;
         }
       }).catch(function(ex) {
@@ -317,7 +351,8 @@ export default {
         mobile:this.mobile,
         birthday:this.birthday,
         sex:this.sex,
-        yzcode:this.yzcode
+        yzcode:this.yzcode,
+        area:this.area,
       }
       if(!this.cname){
         Toast('请输入学生姓名')
@@ -333,6 +368,9 @@ export default {
         return
       }else if(!this.birthday){
         Toast('请选择宝宝生日时间')
+        return
+      }else if(!this.area){
+         Toast('请选择所在区域')
         return
       }else if(!this.sex){
         Toast('请选择小朋友的性别')
@@ -436,9 +474,20 @@ export default {
 
 <style lang="less">
 
+
+@media all and (orientation: portrait) {
+  body {
+    background-color: #f0f0f0;
+    font-size:0.12rem;
+  }
+}
+@media all and (orientation: landscape) { 
 body {
-  background-color: #f0f0f0;
-  font-size:0.12rem;
+    background-color: #f0f0f0;
+    font-size:0.15rem;
+    // max-width:500px;
+    margin:0 auto;
+  }
 }
 .van-field__control:disabled{
   color:#323233 !important;
