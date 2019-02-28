@@ -3,14 +3,12 @@
       <!--头部-->
 	    <div class="bg"><img src="//hhxd.0797wx.cn/public/static/img/bg.jpeg" alt=""/></div>
 
-       <div class="distance_time" v-if ="showDistanceTime">
+       <div class="distance_time" v-if ="showDistanceTime && currentIndex == 1">
             <div style="font-size:0.25rem;padding-top:0.3rem;">离开始报名还有</div>
             <div style="font-size:0.2rem;margin-top:0.1rem;">{{distance_time}}</div>
        </div>
-
-       <div v-if ="!showDistanceTime">
            <!--内容-->
-          <div class="content" v-if="currentIndex == 1">
+          <div class="content" v-if="currentIndex == 1 && !showDistanceTime ">
             <div class="step-1"  v-if="step ==1">
                 <div class="step">
                     <div class="item active">
@@ -228,7 +226,6 @@
                 <div class="right" @click="tabClick(2)" :class="{'tabActive':currentIndex == 2}"></div>
             </div>
           </div>
-       </div>
       <!--时间选择-->
     <van-popup v-model="showTime" position="bottom">
         <van-datetime-picker
