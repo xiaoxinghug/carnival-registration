@@ -71,7 +71,7 @@
                             <div class="cell" v-if="list.id > 0">
                                 <span class="left"><van-radio :name="list.id" v-if="list.nums != 0"></van-radio></span> 
                                 <span class="center">第 {{list.id}} 场：{{list.cdate}}</span>
-                                <span class="right" v-if="list.nums !=0">剩余{{list.nums}}人</span>
+                                <span class="right" v-if="list.nums !=0">剩余{{list.nums}}</span>
                                 <span class="right" v-if="list.nums == 0">已满</span>
                             </div>
                           </div>
@@ -169,29 +169,31 @@
 
           </div>
           <!--预约规则-->
-          <div class="rule" v-if="currentIndex == 0">
+          <div class="rule" v-if="currentIndex == 0 && showRule">
             <div class="text">
               <p>活动主题：紫薇“饭米粒（family）”秀, 家庭总动员</p>
-              <p>活动地点：上海紫薇实验幼儿园桂平园区/浦北园区</p>
-              <p>招募人群：仅限上海紫薇实验幼儿园桂平园区、浦北园区在读孩子（中班至大班）</p>
-              <p>活动时间：2019年3月8日8:00-9:30/10:00-11:30</p>
-              <p>
-                桂平园区场次时间
-                8：00-8：40
-                8：50-9：30
-              </p>
-              <p>
-                浦北园区场次时间
-                10：00-10：40
-                10：50-11：30
-              </p>
+              <p>活动地点：上海紫薇实验幼儿园浦北园区</p>
+              <p>招募人群：仅限上海紫薇实验幼儿园浦北园区在读孩子<span style="color:red">（中班至大班）</span></p>
+              <p>活动时间：2019年3月8日10:00-11:30</p>
               <p>友情提示：报名前请仔细阅读活动介绍，<span style="color:red">全部活动需要一位家长参与。</span> </p>
               <p style="color:red;">提醒：若是其他学校的孩子，不能参与本次专场活动</p>
-              <p>桂平园区报名时间：3月2日9：00-24：00</p>
-              <p>  浦北园区报名时间：3月3日9：00-24：00</p>
-              <p>桂平园区报名规则：<span style="color:red">每个孩子可报名2场活动</span>（非同一个时间段），每场活动同一时段仅限20个小朋友。请家长看清楚时间和校区再进行报名，一经报名后无法退换，请谨慎选择。
-              </p>
+              <p>浦北园区报名时间：3月3日9：00-24：00（报名通道只在此时间段开放）</p>
               <p>浦北园区报名规则：<span style="color:red">每个孩子可报名2场活动</span>（非同一个时间段），每场活动同一时段仅限23个小朋友。请家长看清楚时间和校区再进行报名，一经报名后无法退换，请谨慎选择。
+              </p>
+              <p>★活动最终解释权归哈哈炫动卫视所有</p>
+            </div>
+          </div>
+
+           <div class="rule" v-if="currentIndex == 0 && !showRule">
+            <div class="text">
+              <p>活动主题：紫薇“饭米粒（family）”秀, 家庭总动员</p>
+              <p>活动地点：上海紫薇实验幼儿园桂平园区</p>
+              <p>招募人群：仅限上海紫薇实验幼儿园桂平园区在读孩子<span style="color:red">（中班至大班）</span></p>
+              <p>活动时间：2019年3月8日8:00-9:30</p>
+              <p>友情提示：报名前请仔细阅读活动介绍，<span style="color:red">全部活动需要一位家长参与。</span> </p>
+              <p style="color:red;">提醒：若是其他学校的孩子，不能参与本次专场活动</p>
+              <p>桂平园区报名时间：3月2日9：00-24：00（报名通道只在此时间段开放）</p>
+              <p>桂平园区报名规则：<span style="color:red">每个孩子可报名2场活动</span>（非同一个时间段），每场活动同一时段仅限20个小朋友。请家长看清楚时间和校区再进行报名，一经报名后无法退换，请谨慎选择。
               </p>
               <p>★活动最终解释权归哈哈炫动卫视所有</p>
             </div>
@@ -296,16 +298,16 @@ export default {
      time:null,
      showTime:false,
      distance_time:"",
-     showDistanceTime:true
-         //  showRule:false
+     showDistanceTime:true,
+          showRule:false
     }
   },
   created(){
-    // if(/api1/.test(currentUrl)){
-    //   this.showRule = true;
-    // }else {
-    //   this.showRule = false;
-    // }
+    if(/api1/.test(currentUrl)){
+      this.showRule = true;
+    }else {
+      this.showRule = false;
+    }
   },
   mounted(){
      this.uid = sessionStorage.getItem('uid') || ""
