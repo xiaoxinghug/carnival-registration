@@ -1,156 +1,114 @@
 <template>
   <div class="container">
-      <div class="top">
-         <div class="img relative">
-            <img src="//hhxd.0797wx.cn/Public/member/static/img/top.png" alt="图片加载中..."/>
-            <div class="top-content absolute">
-               <div class="head absolute"> 
-                  <img :src="headerImg"  alt="头像加载中..."/>
-                  <div class="name">{{name}}</div>
-                  <div class="infor" @click="showregInforToast = true" v-if="!hasReg">完善信息，赢30哈币</div>
-                  <div class="infor" @click="showregInforToast = true" v-if="hasReg">{{name}}您好 点击这里，修改个人信息</div>
-               </div>
-            </div>
-            <div class="bottom absolute">
-              <div class="sigin flex">
-                  <div>可使用哈币</div>
-                  <div class="center">{{point}}</div>
-                  <div class="right" @click="doSign" v-if="cansign ==1">签到领哈币</div>
-                  <div class="right" v-if="cansign ==0" style="background:#ccc;">今天已经签到</div>
-              </div>
-            </div>
-         </div>
-      </div>
-      <div class="content">
-          <ul>
-            <div>
-              <li>
-               <a href="/index.php/home/user/integralMall.html">
-                  <img src="./assets/1.png" alt=""/>
-                  <span>哈币商城</span>
-                </a>
-              </li>
-              <li>
-                <a href="/index.php/home/user/integralRecord.html">
-                  <img src="./assets/2.png" alt=""/>
-                  <span>我的哈币</span>
-                </a>
-              </li>
-                <li>
-                  <a href="/index.php/home/user/orderList.html">
-                    <img src="./assets/3.png" alt=""/>
-                    <span>我的订单</span>
-                  </a>
-                </li>
-            </div>
+     <!--已经注册-->
+      <div class="hasReg" v-if="!showregInforToast && !showSuccess">
+          <div class="img"><img :src="bannerurl" alt="图片加载中..."/></div>
+          <h5>{{title}}</h5>
+          <p class="des" v-html="remark">
 
-             <div>
-                <li>
-                    <a href="/index.php/home/user/vipRule.html">
-                      <img src="./assets/4.png" alt=""/>
-                      <span>会员规则</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="/index.php/home/user/consultation.html">
-                      <img src="./assets/5.png" alt=""/>
-                      <span>我要咨询</span>
-                    </a>
-                  </li>
-                    <li>
-                     <a href="//hhxd.0797wx.cn/index.php/home/index">
-                        <img src="./assets/6.png" alt=""/>
-                        <span>哈炫地图</span>
-                      </a>
-                    </li>
-             </div>
-                
-          </ul>
-      </div>
+          </p>
 
-      <div class="footer">
-        <div class="img">
-          <a href="//hhxd.0797wx.cn/index.php/home/index/actlist">
-                    <img src="//hhxd.0797wx.cn/Public/member/static/img/bottom.jpeg" alt="图片加载中..."/>
-          </a>
-        </div>
+          <div class="btn" @click="doRegAction">报名</div>
       </div>
-
+      <div class="success" v-if="showSuccess">
+        <img src="//hhxd.0797wx.cn/Public/member/static/img/resgister_success.png" alt="">
+      </div>
       <!--注册表格-->
-      <van-popup v-model="showregInforToast">
-        <div class="regInfor">
-          <div class="close" @click="close"><img src="./assets/close.png" alt="图片加载中..."/></div>
-          <h5 v-if="!hasReg">哈炫亲子会员注册</h5>
-          <h5 v-if="hasReg">哈炫亲子会员修改</h5>
-           <div class="input-list">
-                   <!-- <van-cell-group> -->
-                      <van-field v-model="cname" placeholder="请输入孩子姓名" />
-                    <!-- </van-cell-group> -->
-               </div>
+      <div class="nohas" v-if="showregInforToast">
+        <div class="hasReg">
+          <div class="img"><img :src="bannerurl" alt="图片加载中..."/></div>
+          <h5>{{title}}</h5>
+          <p class="des" v-html="remark">
 
-               <div class="input-list">
-                   <!-- <van-cell-group> -->
-                      <van-field v-model="jzname" placeholder="请输入法定监护人姓名" />
-                    <!-- </van-cell-group> -->
-               </div>
+          </p>
+
+        </div>
+        <div class="regInfor">
+          <!-- <h5 v-if="!hasReg">哈炫亲子会员注册</h5>
+          <h5 v-if="hasReg">哈炫亲子会员修改</h5> -->
+          <div class="input-list">
+                  <!-- <van-cell-group> -->
+                    <van-field v-model="cname" placeholder="请输入孩子姓名" />
+                  <!-- </van-cell-group> -->
+              </div>
+
+              <div class="input-list">
+                  <!-- <van-cell-group> -->
+                    <van-field v-model="jzname" placeholder="请输入法定监护人姓名" />
+                  <!-- </van-cell-group> -->
+              </div>
+            
+            <div class="input-list">
+                  <!-- <van-cell-group> -->
+                    <van-field v-model="mobile" placeholder="请输入法定监护人手机" />
+                  <!-- </van-cell-group> -->
+              </div>
+              <div class="input-list" @click="showAreaClick">
+                    <van-field v-model="area" disabled placeholder="请选择所在区域" />
+              </div>
+
+              <div class="input-list">
+                  <!-- <van-cell-group> -->
+                    <van-field v-model="address" placeholder="请输入联系地址" />
+                  <!-- </van-cell-group> -->
+              </div>
               
               <div class="input-list">
-                   <!-- <van-cell-group> -->
-                      <van-field v-model="mobile" placeholder="请输入法定监护人手机" />
-                    <!-- </van-cell-group> -->
-               </div>
-               <div class="input-list" @click="showAreaClick">
-                      <van-field v-model="area" disabled placeholder="请选择所在区域" />
-               </div>
+                  <!-- <van-cell-group> -->
+                    <van-field v-model="school" placeholder="请输入就读学校" />
+                  <!-- </van-cell-group> -->
+              </div>
 
-               <div class="input-list">
-                   <!-- <van-cell-group> -->
-                      <van-field v-model="address" placeholder="请输入联系地址" />
-                    <!-- </van-cell-group> -->
-               </div>
-               
-               <div class="input-list">
-                   <!-- <van-cell-group> -->
-                      <van-field v-model="school" placeholder="请输入就读学校" />
-                    <!-- </van-cell-group> -->
-               </div>
+              <div class="input-list" @click="showTime = true">
+                    <van-field v-model="birthday" disabled placeholder="请输入孩子生日" />
+              </div>
+              
 
-                <div class="input-list" @click="showTime = true">
-                      <van-field v-model="birthday" disabled placeholder="请输入孩子生日" />
-               </div>
-               
-
-               <div class="input-list">
-                   <van-radio-group v-model="sex">
-                        <div class="flex" style="padding-left: 0.12rem;">
-                          <span>性别：</span>
-                          <span class="center"><van-radio name="1">男孩</van-radio></span> 
-                          <span class="right"><van-radio name="0">女孩</van-radio></span> 
-                        </div>
-                 </van-radio-group>
-               </div>
+              <div class="input-list">
+                  <van-radio-group v-model="sex">
+                      <div class="flex" style="padding-left: 0.12rem;">
+                        <span>性别：</span>
+                        <span class="center"><van-radio name="1">男孩</van-radio></span> 
+                        <span class="right"><van-radio name="0">女孩</van-radio></span> 
+                      </div>
+                </van-radio-group>
+              </div>
 
 
-               <div class="input-list" style="padding-right:15px;">
-                  <div class="flex">
-                       <div class="code">
-                            <van-field v-model="yzcode" placeholder="请输入短信验证码" />
-                        </div>
-                        
-                        <div class="btn" @click="getCode">
-                          {{codeText}}
-                        </div>
-                  </div>
-               </div>
-           
-                <div class="sure-btn" @click="doRegister" v-if="!hasReg">
-                  确定注册
+              <div class="input-list" style="padding-right:15px;">
+                <div class="flex">
+                      <div class="code">
+                          <van-field v-model="yzcode" placeholder="请输入短信验证码" />
+                      </div>
+                      
+                      <div class="btn" @click="getCode">
+                        {{codeText}}
+                      </div>
                 </div>
-                <div class="sure-btn" @click="doRegister" v-if="hasReg">
-                  确定修改
-                </div>
-        </div>
-      </van-popup>
+              </div>
+          
+              <div class="sure-btn" @click="doRegister">
+                确定报名
+              </div>
+      </div>
+      </div>
+      
+      
+      <!--底部吸低按钮组-->
+      <div class="bottom">
+           <div class="left">
+              <a href="http://hhxd.0797wx.cn/index.php/home/index/actlist">
+                <img src="./assets/register_more.png" alt="">
+                <p>更多活动</p>
+               </a>
+            </div>
+           <div class="right" @click="bottomClick">
+              <!-- <a href="http://hhxd.0797wx.cn/index.php/home/user/memberCenter"> -->
+                <img src="./assets/register_person.png" alt="">
+                <p>会员中心</p>
+              <!-- </a> -->
+          </div>
+      </div>
 
       <!--签到弹窗-->
       <van-popup v-model="show">
@@ -161,7 +119,7 @@
           </div>
           <div class="btn" @click="close">
             <div style="padding-top:0.06rem">签到成功</div>
-            <div style="display:inline-block;font-size:0.1rem;">+{{adpoint}}哈币</div>
+            <div style="display:inline-block;font-size:0.1rem;">+5哈币</div>
           </div>
         </div>
       </van-popup>
@@ -209,9 +167,14 @@
 
 <script>
 const currentUrl = location.href;
-let url = "//hhxd.0797wx.cn/index.php/home/user"
+let url = "//hhxd.0797wx.cn/index.php/home/user";
 import fetchJsonp from 'fetch-jsonp';
-
+import qs from 'qs';
+let _url = location.href.split('?')[1];
+const urlQs = qs.parse(_url);
+if(!urlQs.eventid){
+    urlQs.eventid = "";
+}
 import provinceList from './city.js';
 
 import { RadioGroup, Radio,Field,DatetimePicker,Popup,Toast,Dialog,Loading} from 'vant';
@@ -243,9 +206,11 @@ export default {
   },
   data () {
     return {
+      title:"",
+      remark:"",
+      bannerurl:"",
+      showSuccess:false,
      show:false,
-     adpoint:"",
-     regadpoint:"",
      showregToast: false,
      showregInforToast: false,
      showTime: false,
@@ -285,23 +250,28 @@ export default {
   methods: {
     init(){
        if(this.uid == ""){
-        let tId = setInterval(() => {
+          let tId = setInterval(() => {
             this.uid = sessionStorage.getItem('uid') || ""
               if (this.uid != "") {
-                  localStorage.setItem('uid',this.uid);
                   this.getUserInfor();
                   clearInterval(tId);
               }
           }, 10);
         }else{
           this.getUserInfor();
-          localStorage.setItem('uid',this.uid);
-            // this.uid = sessionStorage.getItem('uid') || ""
         }
       this.areaList = provinceList
     },
     cancelArea(){
-      // this.showArea = false;
+
+    },
+    bottomClick(){
+      Toast('开发中...')
+    },
+    close(){
+      this.show = false;
+      this.showregToast = false;
+      this.showregInforToast = false;
     },
     confirmArea(val){
       this.showArea = false;
@@ -317,7 +287,6 @@ export default {
       this.showTime = false
       let dateVal = this.formatter(val);
       this.birthday = dateVal;
-      // console.log(dateVal)
     },
     formatter(val){
       let year,month,date;
@@ -330,13 +299,31 @@ export default {
         }
         return `${year}-${month}-${date}`;
     },
-    close(){
-      this.show = false;
-      this.showregToast = false;
-      this.showregInforToast = false;
-    },
-    contentClcik(){
-      Toast('开发中...')
+    doRegAction(){
+       Toast.loading({
+        duration: 0,
+        forbidClick: true, // 禁用背景点击
+        message: '报名中...'
+      });
+      this.loading = true;
+      fetchJsonp(`${url}/doRegAction?uid=${this.uid}&eventid=${urlQs.eventid}`)
+      .then((response) =>{
+        return response.json()
+      }).then((json) =>{
+              this.loading = false;
+
+          Toast.clear()
+        if(json.code == 0){
+            // Toast('报名成功！')
+            this.showSuccess = true;
+        }else{
+             Toast(json.message)
+          //没有注册
+        }
+      }).catch((ex) =>{
+              this.loading = false;
+        console.log('parsing failed', ex)
+      });
     },
     getUserInfor(){
       this.loading = true;
@@ -345,22 +332,13 @@ export default {
         return response.json()
       }).then((json) =>{
         this.loading = false;
-        this.headerImg = json.headerimg;
-        this.name = json.nickname
+                  this.getRegSysconfig();
         if(json.code == 0){
-          this.point = json.point;
-          this.cansign = json.cansign;
-           this.cname = json.cname;
-           this.jzname = json.jzname;
-           this.school = json.school;
-           this.address = json.address;
-           this.mobile = json.mobile;
-           this.birthday = json.birthday;
-           this.sex = json.sex;
-           this.area = json.area;
-          this.hasReg = true;
+        }else if(json.code == 1){
+          //没有注册
+          this.showregInforToast = true;
         }
-      }).catch(function(ex) {
+      }).catch((ex) =>{
         this.loading = false;
         console.log('parsing failed', ex)
       });
@@ -377,6 +355,24 @@ export default {
       }
      
       return ret;
+    },
+    getRegSysconfig(){
+      fetchJsonp(`${url}/getRegSysconfig?eventid=${urlQs.eventid}`)
+      .then((response) =>{
+          return response.json()
+        }).then((json) =>{
+          if(json.code ==0){
+              //  console.log(json)
+               this.remark = json.remark;
+               this.title = json.title;
+               this.bannerurl = json.bannerurl;
+          }else{
+             Toast(json.message)
+          }
+        }).catch((ex)=> {
+          this.loading = false
+          console.log('parsing failed', ex)
+        });
     },
     doRegister(){
       if(this.loading == true){
@@ -431,14 +427,13 @@ export default {
           return response.json()
         }).then((json) =>{
           this.loading = false;
-          this.showregInforToast = false;
-          this.hasReg =true;
+          // this.showSuccess = false;
           if(json.code ==0){
-             this.showregToast = true;
-             if(!!json.adpoint){
-               this.point = json.adpoint;
-               this.regadpoint = json.adpoint;
-             }
+            this.showregInforToast = false;
+            this.doRegAction()
+            //  Toast(json.message);
+            // this.getUserInfor();
+            //  this.showregToast = true;
           }else{
              Toast(json.message)
           }
@@ -446,38 +441,6 @@ export default {
           this.loading = false
           console.log('parsing failed', ex)
         });
-    },
-    doSign(){
-      if(this.loading == true){
-        return;
-      }
-      this.loading = true;
-      fetchJsonp(`${url}/doSign?uid=${this.uid}`)
-      .then((response) =>{
-        return response.json()
-      }).then((json) =>{
-        this.loading = false;
-        if(json.code ==0){
-          this.cansign = 0;
-          this.adpoint = json.adpoint;
-          this.point = parseInt(this.point) + parseInt(json.adpoint);
-          this.show = true;
-        }else if(json.code == 2){
-           Dialog.confirm({
-            title: '提示信息',
-            message: json.message
-           }).then(() => {
-            this.showregInforToast = true;
-          }).catch(() => {
-            // on cancel
-          });
-        }else{
-          Toast(json.message);
-        }
-      }).catch((ex) =>{
-        this.loading = false;
-        console.log('parsing failed', ex)
-      });
     },
     getCode(){
       if(!/^1[3456789]\d{9}$/.test(this.mobile)){
@@ -523,15 +486,19 @@ export default {
 
 @media all and (orientation: portrait) {
   body {
-    background-color: #f0f0f0;
     font-size:0.12rem;
+  background-color: #f0f0f0;
+      margin-bottom:0.8rem !important;
+
   }
 }
 @media all and (orientation: landscape) { 
 body {
-    background-color: #f0f0f0;
     font-size:0.15rem;
     // max-width:500px;
+      background-color: #f0f0f0;
+    margin-bottom:0.8rem !important;
+
     margin:0 auto;
   }
 }
@@ -572,7 +539,45 @@ img{
 .absolute{
   position: absolute;
 }
+.hasReg{
+  .img{
+    min-height:1.5rem;
+    img{
+      display: block;
+      border:none;
+      margin:0 auto;
+    }
+  }
+  h5{
+    font-size:0.18rem;
+    text-align:center;
+    margin-top:0.35rem;
+  }
+  p{
+    padding:0.2rem;
+    margin:0.1rem;
+    border:1px solid #fbd03d;
+    border-radius: 5px;
+  }
+  .btn{
+     background: #f7abda;
+    border-radius:4px;
+    color:#fff;
+    height:0.4rem;
+    line-height:0.4rem;
+    width:30%;
+    margin:0.1rem auto;
+    margin-top:0.5rem;
+    font-size:0.14rem;
+    text-align:center;
+  }
+}
 .container{
+  .success{
+   width:60%;
+   margin:0 auto;
+   margin-top:50%;
+  }
   .sure-btn{
     background: #dd497b;
     border-radius:4px;
@@ -582,6 +587,40 @@ img{
     width:80%;
     margin:0.1rem auto;
     // font-size:0.15rem;
+  }
+  .bottom{
+    position: fixed;
+    bottom: 0px;
+    width:100%;
+    background-color: #fff;
+    padding-top:5px;
+    img{
+     height:0.25rem;
+     display: block;
+     margin: 0 auto;
+    }
+    p{
+      margin:0px;
+    }
+    div{
+      width:50%;
+      text-align:center;
+      float: left;
+      height:0.4rem;
+      margin-bottom:5px;
+    }
+    .left{
+      p{
+              color:#fbd03d;
+
+      }
+    }
+    .right{
+      p{
+      color:#f7abda;
+
+      }
+    }
   }
   .input-list{
       margin-top:0.1rem;
@@ -607,6 +646,7 @@ img{
   .regInfor{
     width:3.3rem;
     position: relative;
+    margin:0 auto;
     text-align:center;
     h5{
       font-size:0.15rem;
@@ -668,14 +708,11 @@ img{
       }
       .infor{
         color:#fff;
-        font-size:0.13rem;
+        font-size:0.1rem;
         background: #fbd03d;
-        padding:5px 0.05rem;
+        padding:3px 0.05rem;
         border-radius: 4px;
-        // width:100%;
-        min-width: 2.4rem;
-        // width:120%;
-        // margin-top:0.1rem;
+        margin-top:0.1rem;
       }
     }
   }

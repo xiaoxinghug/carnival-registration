@@ -2,6 +2,10 @@ const provinceList = [
   {
     value: '上海市',
     id: '310000'
+  },
+  {
+    value: '其他',
+    id: '000000'
   }
 ]
 
@@ -11,6 +15,13 @@ const cityList = {
       province: '上海市',
       value: '上海市',
       id: '310100'
+    }
+  ],
+  '000000':[
+    {
+      province: '其他',
+      value: '其他',
+      id: '000001'
     }
   ]
 }
@@ -96,6 +107,13 @@ const areaList = {
       city: '市辖区',
       value: '崇明区',
       id: '310151'
+    }
+  ],
+  '000001':[
+    {
+      city: '市辖区',
+      value: '其他',
+      id: '000011'
     }
   ]
 }

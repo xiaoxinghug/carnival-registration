@@ -1,7 +1,12 @@
 <template>
   <div class="mainWarp">
       <!--头部-->
-	    <div class="bg"><img src="//hhxd.0797wx.cn/public/static/img/bg.jpeg" alt=""/></div>
+	    <div class="bg" style="position:relative">
+           <div style="position:absolute;color:#fff;background-color:#E95C4A;width:100%;">
+              <div style="padding:5px 0.1rem;">{{title}}</div> 
+             </div>
+            <img src="//hhxd.0797wx.cn/public/static/img/bg.jpeg" alt=""/>
+        </div>
 
        <div class="distance_time" v-if ="showDistanceTime && currentIndex == 1">
             <div style="font-size:0.25rem;padding-top:0.3rem;">离开始报名还有</div>
@@ -9,13 +14,53 @@
        </div>
            <!--内容-->
           <div class="content" v-if="currentIndex == 1 && !showDistanceTime ">
-            <div class="step-1"  v-if="step ==1">
-                <div class="step">
-                    <div class="item active">
+            <div v-if ="!showOverTime && !forbidden">
+              <div class="step-1"  v-if="step ==1">
+                  <div class="step">
+                      <div class="item active">
+                          <span>1</span>
+                          <p>选择活动</p>
+                      </div>
+                        <div class="item">
+                            <span>2</span>
+                            <p>选择场次</p>
+                        </div>
+                      <div class="item">
+                            <span>3</span>
+                            <p>完善信息</p>
+                      </div>
+                </div>
+                <div class="list">
+                    <ul>
+                      <li v-for="(list,index) in programData" 
+                      :key="index" 
+                      :class="{'listActive':currentListIndex==index}"
+                      @click="activeClick(list,index)">
+                        <div class="list-content">
+                            <div class="title">
+                              <span style="font-size:0.15rem;">{{list.title}}</span>
+                              <span style="text-align:right;">{{list.ptype}}</span>
+                            </div>
+                            <div class="text">
+                              <p>
+                                {{list.remark}}
+                              </p>
+                            </div>
+                          </div>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div class="step-btn"  @click="toStep(2)">下一步</div>
+              </div>
+                <!--第二步-->
+                <div class="step-2" v-if="step ==2">
+                  <div class="step">
+                    <div class="item active" @click="toStep(1)">
                         <span>1</span>
                         <p>选择活动</p>
                     </div>
-                      <div class="item">
+                      <div class="item active">
                           <span>2</span>
                           <p>选择场次</p>
                       </div>
@@ -23,184 +68,125 @@
                           <span>3</span>
                           <p>完善信息</p>
                     </div>
-              </div>
-              <div class="list">
-                  <ul>
-                    <li v-for="(list,index) in programData" 
-                    :key="index" 
-                    :class="{'listActive':currentListIndex==index}"
-                    @click="activeClick(list,index)">
-                      <div class="list-content">
-                          <div class="title">
-                            <span style="font-size:0.15rem;">{{list.title}}</span>
-                            <span style="text-align:right;">{{list.ptype}}</span>
-                          </div>
-                          <div class="text">
-                            <p>
-                              {{list.remark}}
-                            </p>
-                          </div>
-                        </div>
-                    </li>
-                  </ul>
-                </div>
-
-                <div class="step-btn"  @click="toStep(2)">下一步</div>
-            </div>
-              <!--第二步-->
-              <div class="step-2" v-if="step ==2">
-                <div class="step">
-                  <div class="item active" @click="toStep(1)">
-                      <span>1</span>
-                      <p>选择活动</p>
                   </div>
-                    <div class="item active">
-                        <span>2</span>
-                        <p>选择场次</p>
-                    </div>
-                  <div class="item">
-                        <span>3</span>
-                        <p>完善信息</p>
-                  </div>
-                </div>
-                
-                <div class="scene">
-                      <div class="tip">您选择了 <span style="color:#dd497b;">{{stepTwoTitle}}</span>项目，请选择参加场次</div>
-                      <van-radio-group v-model="cid">
-                          <div v-for="(list,index) in clist" :key="index">
-                            <div class="cell" v-if="list.id > 0">
-                                <span class="left"><van-radio :name="list.id" v-if="list.nums != 0"></van-radio></span> 
-                                <span class="center">第 {{list.id}} 场：{{list.cdate}}</span>
-                                <span class="right" v-if="list.nums !=0">剩余{{list.nums}}</span>
-                                <span class="right" v-if="list.nums == 0">已满</span>
-                            </div>
-                          </div>
-                        </van-radio-group>
-                </div>
-
-                <div class="step-btn"  @click="toStep(3)">下一步</div>
-
-              </div>
-
-              <!--第三步-->
-              <div class="step-3" v-if="step ==3">
-                <div class="step">
-                    <div class="item active" @click="toStep(1)">
-                        <span>1</span>
-                        <p>选择活动</p>
-                    </div>
-                      <div class="item active" @click="toStep(2)">
-                          <span>2</span>
-                          <p>选择场次</p>
-                      </div>
-                    <div class="item active">
-                          <span>3</span>
-                          <p>完善信息</p>
-                    </div>
-                </div>
-                <!--完善信息-->
-                <div class="information">
                   
-                  <div class="input-list">
-                      <!-- <van-cell-group> -->
-                          <van-field v-model="bbname" placeholder="请输入宝贝姓名" />
-                        <!-- </van-cell-group> -->
-                  </div>
-
-                  <div class="input-list">
-                      <!-- <van-cell-group> -->
-                          <van-field v-model="jzname" placeholder="请输入家长姓名" />
-                        <!-- </van-cell-group> -->
-                  </div>
-
-                  <div class="input-list">
-                      <!-- <van-cell-group> -->
-                          <van-field v-model="address" placeholder="请输入联系地址" />
-                        <!-- </van-cell-group> -->
-                  </div>
-
-                  <div class="input-list">
-                      <!-- <van-cell-group> -->
-                          <van-field v-model="mobile" placeholder="请输入联系电话" />
-                        <!-- </van-cell-group> -->
-                  </div>
-
-                    <div class="input-list" @click="showTime = true">
-                      <!-- <van-cell-group> -->
-                          <van-field v-model="birthday" disabled placeholder="请选择小朋友的生日" />
-                        <!-- </van-cell-group> -->
-                  </div>
-
-                  <div class="input-list">
-                      <van-radio-group v-model="sex">
-                            <div class="flex">
-                              <span>小朋友性别：</span>
-                              <span class="center"><van-radio name="1">男孩</van-radio></span> 
-                              <span class="right"><van-radio name="0">女孩</van-radio></span> 
+                  <div class="scene">
+                        <div class="tip">您选择了 <span style="color:#dd497b;">{{stepTwoTitle}}</span>项目，请选择参加场次</div>
+                        <van-radio-group v-model="cid">
+                            <div v-for="(list,index) in clist" :key="index">
+                              <div class="cell" v-if="list.id > 0">
+                                  <span class="left"><van-radio :name="list.id" v-if="list.nums != 0"></van-radio></span> 
+                                  <span class="center">{{list.cdate}}</span>
+                                  <span class="right" v-if="list.nums !=0">剩余{{list.nums}}</span>
+                                  <span class="right" v-if="list.nums == 0">已满</span>
+                              </div>
                             </div>
-                    </van-radio-group>
+                          </van-radio-group>
                   </div>
 
-
-                  <div class="input-list">
-                      <div class="flex">
-                          <div class="code">
-                              <!-- <van-cell-group> -->
-                                <van-field v-model="yzcode" placeholder="请输入短信验证码" />
-                              <!-- </van-cell-group> -->
-                            </div>
-                            
-                            <div class="btn" @click="getCode">
-                              {{codeText}}
-                            </div>
-                      </div>
-                  </div>
-
-
-                  <div class="sure-btn" @click="doRegister">
-                      确定预约
-                  </div>
+                  <div class="step-btn"  @click="toStep(3)">下一步</div>
 
                 </div>
+
+                <!--第三步-->
+                <div class="step-3" v-if="step ==3">
+                  <div class="step">
+                      <div class="item active" @click="toStep(1)">
+                          <span>1</span>
+                          <p>选择活动</p>
+                      </div>
+                        <div class="item active" @click="toStep(2)">
+                            <span>2</span>
+                            <p>选择场次</p>
+                        </div>
+                      <div class="item active">
+                            <span>3</span>
+                            <p>完善信息</p>
+                      </div>
+                  </div>
+                  <!--完善信息-->
+                  <div class="information">
+                    
+                    <div class="input-list">
+                        <!-- <van-cell-group> -->
+                            <van-field v-model="bbname" placeholder="请输入宝贝姓名" />
+                          <!-- </van-cell-group> -->
+                    </div>
+
+                    <div class="input-list">
+                        <!-- <van-cell-group> -->
+                            <van-field v-model="jzname" placeholder="请输入法定监护人姓名" />
+                          <!-- </van-cell-group> -->
+                    </div>
+
+                    <div class="input-list">
+                        <!-- <van-cell-group> -->
+                            <van-field v-model="address" placeholder="请输入联系地址" />
+                          <!-- </van-cell-group> -->
+                    </div>
+
+                    <div class="input-list">
+                        <!-- <van-cell-group> -->
+                            <van-field v-model="mobile" placeholder="请输入联系电话" />
+                          <!-- </van-cell-group> -->
+                    </div>
+
+                      <div class="input-list" @click="showTime = true">
+                        <!-- <van-cell-group> -->
+                            <van-field v-model="birthday" disabled placeholder="请选择小朋友的生日" />
+                          <!-- </van-cell-group> -->
+                    </div>
+
+                    <div class="input-list">
+                        <van-radio-group v-model="sex">
+                              <div class="flex">
+                                <span>小朋友性别：</span>
+                                <span class="center"><van-radio name="1">男孩</van-radio></span> 
+                                <span class="right"><van-radio name="0">女孩</van-radio></span> 
+                              </div>
+                      </van-radio-group>
+                    </div>
+
+
+                    <div class="input-list">
+                        <div class="flex">
+                            <div class="code">
+                                <!-- <van-cell-group> -->
+                                  <van-field v-model="yzcode" placeholder="请输入短信验证码" />
+                                <!-- </van-cell-group> -->
+                              </div>
+                              
+                              <div class="btn" @click="getCode">
+                                {{codeText}}
+                              </div>
+                        </div>
+                    </div>
+
+
+                    <div class="sure-btn" @click="doRegister">
+                        确定预约
+                    </div>
+
+                  </div>
+                </div>
+             </div>
+
+             <div class="distance_time" v-if ="showOverTime">
+                    <div style="font-size:0.25rem;padding-top:0.3rem;">报名已结束</div>
               </div>
-              
-
-
-
+               <div class="distance_time" v-if ="forbidden">
+                    <div style="font-size:0.25rem;padding-top:0.3rem;">活动未开启</div>
+              </div>
           </div>
           <!--预约规则-->
-          <div class="rule" v-if="currentIndex == 0 && showRule">
-            <div class="text">
-              <p>活动主题：紫薇“饭米粒（family）”秀, 家庭总动员</p>
-              <p>活动地点：上海紫薇实验幼儿园浦北园区</p>
-              <p>招募人群：仅限上海紫薇实验幼儿园浦北园区在读孩子<span style="color:red">（中班至大班）</span></p>
-              <p>活动时间：2019年3月8日10:00-11:30</p>
-              <p>友情提示：报名前请仔细阅读活动介绍，<span style="color:red">全部活动需要一位家长参与。</span> </p>
-              <p style="color:red;">提醒：若是其他学校的孩子，不能参与本次专场活动</p>
-              <p>浦北园区报名时间：3月3日9：00-24：00（报名通道只在此时间段开放）</p>
-              <p>浦北园区报名规则：<span style="color:red">每个孩子可报名2场活动</span>（非同一个时间段），每场活动同一时段仅限23个小朋友。请家长看清楚时间和校区再进行报名，一经报名后无法退换，请谨慎选择。
-              </p>
-              <p>★活动最终解释权归哈哈炫动卫视所有</p>
-            </div>
-          </div>
-
-           <div class="rule" v-if="currentIndex == 0 && !showRule">
-            <div class="text">
-              <p>活动主题：紫薇“饭米粒（family）”秀, 家庭总动员</p>
-              <p>活动地点：上海紫薇实验幼儿园桂平园区</p>
-              <p>招募人群：仅限上海紫薇实验幼儿园桂平园区在读孩子<span style="color:red">（中班至大班）</span></p>
-              <p>活动时间：2019年3月8日8:00-9:30</p>
-              <p>友情提示：报名前请仔细阅读活动介绍，<span style="color:red">全部活动需要一位家长参与。</span> </p>
-              <p style="color:red;">提醒：若是其他学校的孩子，不能参与本次专场活动</p>
-              <p>桂平园区报名时间：3月2日9：00-24：00（报名通道只在此时间段开放）</p>
-              <p>桂平园区报名规则：<span style="color:red">每个孩子可报名2场活动</span>（非同一个时间段），每场活动同一时段仅限20个小朋友。请家长看清楚时间和校区再进行报名，一经报名后无法退换，请谨慎选择。
-              </p>
-              <p>★活动最终解释权归哈哈炫动卫视所有</p>
+          <div class="rule" v-if="currentIndex == 0">
+            <div class="text" v-html="remark">
+              
             </div>
           </div>
           <!--我的门票-->
           <div class="ticket" v-if="currentIndex == 2">
-            <div style="text-align: center;margin-top: 1rem;" v-if="registerInfor.length ==0">您还没有预约任何项目，赶快报名吧！</div>
+            <div style="text-align: center;margin-top: 1rem;color:#E95C4A" v-if="registerInfor.length ==0">您还没有预约任何项目，赶快报名吧！</div>
             <ul v-if="registerInfor.length>0">
               <li>
                   <div class="text">
@@ -249,8 +235,14 @@ if(/api1/.test(currentUrl)){
 }else {
    url = '//hhxd.0797wx.cn/index.php/home/api'
 }
-let timeUrl = '//hhxd.0797wx.cn/index.php/home/user/getSerTime'
+let timeUrl = '//hhxd.0797wx.cn/index.php/home/user/getSerTime';
 import fetchJsonp from 'fetch-jsonp';
+import qs from 'qs';
+let _url = location.href.split('?')[1];
+const urlQs = qs.parse(_url);
+if(!urlQs.eventid){
+    urlQs.eventid = 1;
+}
 import { RadioGroup, Radio,Field,DatetimePicker,Popup,Toast} from 'vant';
 import Vue from 'vue';
 import 'vant/lib/radio/style';
@@ -298,16 +290,20 @@ export default {
      time:null,
      showTime:false,
      distance_time:"",
-     showDistanceTime:true,
-          showRule:false
+     showDistanceTime:false,
+     showOverTime:false,
+     forbidden:false,
+     remark:"",
+     title:""
+          // showRule:false
     }
   },
   created(){
-    if(/api1/.test(currentUrl)){
-      this.showRule = true;
-    }else {
-      this.showRule = false;
-    }
+    // if(/api1/.test(currentUrl)){
+    //   this.showRule = false;
+    // }else {
+    //   this.showRule = true;
+    // }
   },
   mounted(){
      this.uid = sessionStorage.getItem('uid') || ""
@@ -317,9 +313,7 @@ export default {
   methods: {
     init(){
         this.getProgramData();
-        this.getServerTime();
-        // console.log(this.uid)
-      
+        this.getSysconfig();
          if(this.uid == ""){
               let tId = setInterval(() => {
                   this.uid = sessionStorage.getItem('uid') || ""
@@ -333,6 +327,39 @@ export default {
             }
 
     },
+    getSysconfig(){
+       fetchJsonp(`${url}/getSysconfig?eventid=${urlQs.eventid}`)
+        .then((response) =>{
+          return response.json()
+        }).then((json) =>{
+          // this.registerInfor = json
+          if(json.code == 0){
+              this.remark = json.remark
+              this.title = json.title
+             if(json.sysatt == 1){
+                let Time = json.time.replace(/-/g,'/');
+                this.time = new Date(Time).getTime();
+                if(json.opencounts>0){
+                    let closetime = json.begintime.replace(/-/g,'/');
+                    this.getDistanceTime(closetime);
+                }
+                if(json.isclose == 1){
+                  this.showOverTime = true;
+                }else{
+                } 
+             }else if(json.sysatt == 0){
+                if(json.isclose == 1){
+                  this.showOverTime = true;
+                }else{
+                  this.forbidden = true;
+                } 
+             }
+          }
+          // console.log(json);
+        }).catch(function(ex) {
+          console.log('parsing failed', ex)
+        });
+    },
     cancelTime(){
       this.showTime = false
     },
@@ -341,17 +368,13 @@ export default {
       this.stepTwoTitle = list.title;
       this.pgid = list.id;
     },
-    getDistanceTime(){
-     let time_end =null;
-     if(/api1/.test(currentUrl)){
-         time_end = new Date("2019/3/3 09:00:00");
-      }else {
+    getDistanceTime(time_end){
+      time_end = new Date(time_end);
+      // over_time = new Date(over_time);
 
-         time_end = new Date("2019/3/2 09:00:00");
-      }
-      // let time_end = new Date('2019/3/8 00:00:00')
-          time_end = time_end.getTime();
-          this.show_time(time_end)
+      time_end = time_end.getTime();
+      // over_time = over_time.getTime();
+      this.show_time(time_end)
     },
     show_time(time_end){
        let timerId = setInterval(()=>{
@@ -383,28 +406,17 @@ export default {
         }else{
             
           this.showDistanceTime = false;
+          // if(over_distance>0){
+          //   this.showOverTime = true
+          // }
+          // if(overTime)
           // return;
           clearTimeout(timerId);
         }
        },1000);
     },
-    getServerTime(){
-      fetchJsonp(`${timeUrl}`)
-        .then((response) =>{
-          return response.json()
-        }).then((json) =>{
-          if(json.code ==0){
-             let Time = json.time.replace(/-/g,'/');
-             this.time = new Date(Time).getTime();
-             this.getDistanceTime();
-          }
-          // this.registerInfor = json
-        }).catch(function(ex) {
-          console.log('parsing failed', ex)
-        });
-    },
     getRegister(){
-      fetchJsonp(`${url}/myRegister?uid=${this.uid}`)
+      fetchJsonp(`${url}/myRegister?uid=${this.uid}&eventid=${urlQs.eventid}`)
         .then((response) =>{
           return response.json()
         }).then((json) =>{
@@ -459,7 +471,7 @@ export default {
         Toast('请输入宝宝姓名')
         return
       }else if(!this.jzname){
-        Toast('请输入家长姓名')
+        Toast('请输入法定监护人姓名')
         return
       }else if(!this.address){
         Toast('请输入地址')
@@ -475,16 +487,24 @@ export default {
         return;
       }
       const data = this.parseData(obj);
-      fetchJsonp(`${url}/doRegister?uid=${this.uid}${data}`)
+       Toast.loading({
+        duration: 0,
+        forbidClick: true, // 禁用背景点击
+        message: '报名中...'
+      });
+      fetchJsonp(`${url}/doRegister?uid=${this.uid}&eventid=${urlQs.eventid}${data}`)
         .then((response) =>{
           return response.json()
         }).then((json) =>{
           // this.programData = json
+          Toast.clear()
           if(json.code !=0){
             Toast(json.message)
           }else{
             if(this.registerInfor.length ==0){
-             Toast('报名成功！您可以再报预约一场')
+              setTimeout(()=>{
+                             Toast('报名成功！您可以再报预约一场')
+              },500)
             }else{
                Toast('报名成功！')
             }
@@ -496,7 +516,7 @@ export default {
         });
     },
     getProgramData(){
-      fetchJsonp(`${url}/getProgramData`)
+      fetchJsonp(`${url}/getProgramData?eventid=${urlQs.eventid}`)
         .then((response) =>{
           return response.json()
         }).then((json) =>{
@@ -513,7 +533,7 @@ export default {
       if(!this.btnActive){
         return;
       }
-      fetchJsonp(`${url}/getMobileCode?mobile=${this.mobile}`)
+      fetchJsonp(`${url}/getMobileCode?mobile=${this.mobile}&eventid=${urlQs.eventid}`)
         .then((response) =>{
           return response.json()
         }).then((json) =>{
@@ -538,7 +558,7 @@ export default {
       }, 1000);
     },
     getClist(){
-      fetchJsonp(`${url}/getClist?uid=${this.uid}&pgid=${this.pgid}`).then((response) =>{
+      fetchJsonp(`${url}/getClist?uid=${this.uid}&pgid=${this.pgid}&eventid=${urlQs.eventid}`).then((response) =>{
           return response.json()
         }).then((json) =>{
           // console.log(json)
@@ -552,7 +572,7 @@ export default {
       this.step = 1;
     },
     getUserInfo(){
-      fetchJsonp(`${url}/getUserInfo?uid=${this.uid}`)
+      fetchJsonp(`${url}/getUserInfo?uid=${this.uid}&eventid=${urlQs.eventid}`)
         .then((response) =>{
           return response.json()
         }).then((json) =>{
@@ -623,17 +643,17 @@ body {
   opacity: 1 !important;
 }
 .listActive{
-  border:1px solid #dd497b !important;
+  border:2px solid #dd497b !important;
 }
 .van-radio__icon--checked .van-icon{
-  border-color: #dd497b !important; 
-    background-color: #dd497b !important;
+  border-color: #E95C4A !important; 
+    background-color: #E95C4A !important;
 }
 .van-field__control:disabled{
   color:#323233 !important;
 }
 .van-radio__icon .van-icon{
-      border: 1px solid #dd497b !important;
+      border: 1px solid #E95C4A !important;
 
 }
 .tabActive{
@@ -648,7 +668,7 @@ body {
   margin:0 auto;
   text-align:center;
   color:#fff;
-  background-color: #dd497b;
+  background-color: #E95C4A;
   line-height:0.3rem;
   border-radius: 5px;
   margin-top:0.25rem;
@@ -660,7 +680,7 @@ body {
   }
   .distance_time{
     text-align:center;
-    color:#dd497b;
+    color:#E95C4A;
     font-size:0.15rem;
     margin-top:0.8rem;
   }
@@ -672,7 +692,7 @@ body {
       color:#fff;
       border-radius: 5px;
       margin:0.2rem auto;
-      background-color: #dd497b;
+      background-color: #E95C4A;
       padding:8px;
     }
     .input-list{
@@ -688,7 +708,7 @@ body {
         width:1rem;
         text-align:center;
         color:#fff;
-        background-color: #dd497b;
+        background-color: #E95C4A;
         line-height:44px;
         margin-left:0.12rem;
       }
@@ -699,7 +719,7 @@ body {
      .tip{
         text-align:center;
         font-size:0.12rem;
-        border:1px solid #dd497b;
+        border:1px solid #E95C4A;
         border-radius:4px;
         padding:5px 0px;
       }
@@ -720,7 +740,7 @@ body {
         height:0.25rem;
         text-align:center;
         line-height:0.25rem;
-        background-color:#dd497b;
+        background-color:#E95C4A;
         color:#fff;
         border-radius: 10px;
       }
@@ -790,7 +810,7 @@ body {
         width:25px;
         height:25px;
         border-radius: 15px;
-        background-color:#dd497b;
+        background-color:#E95C4A;
         color:#fff;
         line-height:25px;
         // margin-top:5px;
@@ -837,7 +857,7 @@ body {
     width:100%;
     bottom:0px;
     left:0px;
-    background:url(./assets/bottom.png) no-repeat center;
+    background:url(./assets/bottom.jpeg) no-repeat center;
     background-size:100%;
   }
   .bottom-content{

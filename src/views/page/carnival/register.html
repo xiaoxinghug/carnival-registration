@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title></title>
+    <script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+    <script>
+        wx.config({
+            appId: '{$signPackage.appId}',
+            timestamp: {$signPackage.timestamp},
+            nonceStr: '{$signPackage.nonceStr}',
+            signature: '{$signPackage.signature}',
+            jsApiList: [
+                'checkJsApi',
+                'onMenuShareTimeline',
+                'onMenuShareAppMessage',
+                'onMenuShareQQ',
+                'onMenuShareWeibo'
+              ]
+        });
+        wx.ready(function () {
+            // 1 判断当前版本是否支持指定 JS 接口，支持批量判断
+            //写UID
+            sessionStorage.setItem("uid", {$uid});
+            console.log("获取到的UID=" + sessionStorage.getItem('uid'));
+            wx.checkJsApi({
+              jsApiList: [
+                'getNetworkType',
+                'previewImage',
+                 'onMenuShareTimeline',
+                'onMenuShareAppMessage',
+                'onMenuShareQQ',
+                'onMenuShareWeibo'
+              ],
+              success: function (res) {
+                //alert(JSON.stringify(res));//测试时弹出
+              }
+            });
+            var shareData1 = {
+              title: '{$shareD.title1}',
+              desc: '{$shareD.desc}',
+              link: '{$shareD.link}',
+              imgUrl: '{$shareD.imgUrl}',
+              trigger: function (res) {
+                console.log('用户点击发送给朋友');
+              },
+              success: function (res) {
+                //alert('已分享');
+                console.log('分享成功！');
+                //$(".sharediv").hide();
+                //dosharejs();
+                //$(".dvideo").show();
+              },
+              cancel: function (res) {
+                console.log('已取消');
+              },
+              fail: function (res) {
+                //alert(JSON.stringify(res));
+              }
+            };
+            var shareData2 = {
+                title: '{$shareD.title2}',
+                link: '{$shareD.link}',
+                imgUrl: '{$shareD.imgUrl}',
+                trigger: function (res) {
+                    console.log('用户点击分享到朋友圈');
+                },
+                success: function () { 
+                    //alert('已分享');
+                    console.log('分享成功！');
+                    //$(".sharediv").hide();
+                    //dosharejs();
+                    //$(".dvideo").show();
+                },
+                cancel: function () { 
+                    console.log('已取消');
+                },
+                fail: function (res) {
+                    //alert(JSON.stringify(res));
+                }
+            };
+            wx.onMenuShareAppMessage(shareData1);
+            wx.onMenuShareTimeline(shareData2);
+            wx.onMenuShareQQ(shareData1);
+            wx.onMenuShareWeibo(shareData1);
+        });
+        wx.error(function (res) {
+          //alert(res.errMsg);
+        });
+        </script>
+        <!--微信分享End-->
+    <script>
+       (function (doc, win) {
+            var docEl = doc.documentElement,
+                    resizeEvt = 'onorientationchange' in window ? 'orientationchange' : 'resize',
+                    recalc = function () {
+                        var clientWidth = docEl.clientWidth;
+                        if (!clientWidth) return;
+                        //在375px宽度的屏幕下 1rem = 100px
+                        if (clientWidth >= 375){
+                               docEl.style.fontSize = '100px';
+                            } else {
+                              docEl.style.fontSize = 100 * (clientWidth / 375) + 'px'; //在375px宽度的屏幕下 1rem = 100px
+                         }
+                    };
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false);
+        })(document, window);
+    </script>
+<link href="/public/member/static/css/vendor.css?d3cb64ff279ff76069b2" rel="stylesheet"><link href="/public/member/static/css/views/page/regist.css?d3cb64ff279ff76069b2" rel="stylesheet"></head>
+  <body>
+    <div id="app">
+		
+	</div>
+    <!-- built files will be auto injected -->
+  <script type="text/javascript" src="/public/member/static/js/vendor.js?d3cb64ff279ff76069b2"></script><script type="text/javascript" src="/public/member/static/js/views/page/regist.js?d3cb64ff279ff76069b2"></script></body>
+</html>
