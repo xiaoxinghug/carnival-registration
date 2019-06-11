@@ -66,6 +66,7 @@
          </div>
         </div>
       </div>
+      <div class="btn" @click="toIndex">返回会员中心</div>
   </div>
 </template>
 
@@ -87,7 +88,9 @@ export default {
 
   },
   methods: {
-    
+    toIndex(){
+      window.location.href = `/index.php/home/user/memberCenter`;
+    }
   }
 }
 </script>
@@ -103,6 +106,20 @@ body{
   font-size:0.12rem;
 }
 .container{
+.btn{
+   background: #f7abda;
+    border-radius:4px;
+    color:#fff;
+    height:0.4rem;
+    line-height:0.4rem;
+    width:30%;
+    margin:0 auto;
+    margin-bottom:0.2rem;
+    // margin-top:0.5rem;
+    font-size:0.14rem;
+    text-align:center;
+    // margin-bottom:20px;
+}
   img{
     max-width: 100%;
     display:block;

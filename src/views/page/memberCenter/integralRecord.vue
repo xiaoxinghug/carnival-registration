@@ -92,6 +92,7 @@ export default {
     },
     tabClick(index){
       this.currIndex = index;
+      this.list = [];
       if(index == 0){
          this.st = 0;
           this.getPointRecord();

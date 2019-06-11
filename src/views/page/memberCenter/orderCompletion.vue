@@ -324,7 +324,7 @@ img{
       }
       .des{
         padding:0px 0.1rem;
-        width:1.7rem;
+        width:1.6rem;
         font-size:0.15rem;
         .num{
           color:rgba(178,178,178,1);

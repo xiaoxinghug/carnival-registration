@@ -6,8 +6,8 @@
             <div class="top-content absolute">
                <div class="head absolute"> 
                   <img :src="headerImg"  alt="头像加载中..."/>
-                  <div class="name">{{name}}</div>
-                  <div class="infor" @click="showregInforToast = true" v-if="!hasReg">完善信息，赢30哈币</div>
+                  <div class="name">{{name}} <span v-if="hasReg" style="background:#fbd03d;">会员</span> <span v-if="!hasReg" style="background:rgb(204, 204, 204)">非会员</span> </div>
+                  <div class="infor" @click="fillInfor" v-if="!hasReg">注册信息，赢30哈币</div>
                   <div class="infor" @click="showregInforToast = true" v-if="hasReg">{{name}}您好 点击这里，修改个人信息</div>
                </div>
             </div>
@@ -62,6 +62,26 @@
                         <img src="./assets/6.png" alt=""/>
                         <span>哈炫地图</span>
                       </a>
+                    </li>
+             </div>
+             <div>
+                <li>
+                    <a href="/index.php/home/user/rank.html">
+                      <img src="./assets/7.png" alt=""/>
+                      <span>开卡享好礼</span>
+                    </a>
+                    </li>
+                    <li @click="contentClcik">
+                    <!-- <a href="/index.php/home/user/rank.html"> -->
+                      <img src="./assets/8.png" alt=""/>
+                      <span>我要献爱心</span>
+                    <!-- </a> -->
+                    </li>
+                    <li @click="contentClcik">
+                    <!-- <a href="/index.php/home/user/rank.html"> -->
+                      <img src="./assets/9.png" alt=""/>
+                      <span>健康小剧场</span>
+                    <!-- </a> -->
                     </li>
              </div>
                 
@@ -143,10 +163,10 @@
                   </div>
                </div>
            
-                <div class="sure-btn" @click="doRegister" v-if="!hasReg">
+                <div class="sure-btn" @click="doRegister()" v-if="!hasReg">
                   确定注册
                 </div>
-                <div class="sure-btn" @click="doRegister" v-if="hasReg">
+                <div class="sure-btn" @click="doRegister()" v-if="hasReg">
                   确定修改
                 </div>
         </div>
@@ -209,11 +229,12 @@
 
 <script>
 const currentUrl = location.href;
-let url = "//hhxd.0797wx.cn/index.php/home/user"
+let url = "//hhxd.0797wx.cn/index.php/home/user";
+import qs from 'qs';
+let _url = location.href.split('?')[1];
+const urlQs = qs.parse(_url);
 import fetchJsonp from 'fetch-jsonp';
-
 import provinceList from './city.js';
-
 import { RadioGroup, Radio,Field,DatetimePicker,Popup,Toast,Dialog,Loading} from 'vant';
 import Vue from 'vue';
 import AwesomePicker from 'vue-awesome-picker';
@@ -277,7 +298,9 @@ export default {
     }
   },
   created(){
-   
+   if(!!urlQs.register){
+     this.showregInforToast = true;
+   }
   },
   mounted(){
      this.init();
@@ -378,24 +401,34 @@ export default {
      
       return ret;
     },
+    fillInfor(){
+      this.sureRegister();
+    },
+    sureRegister(){
+     
+        Dialog.confirm({
+        title: '声明',
+        confirmButtonText:'同意',
+        messageAlign:'left',
+        message: `<span style="font-weight:600;text-decoration:underline">欢迎您注册“哈炫亲子”会员。“哈炫亲子”将为您和您的孩子提供优质的亲子活动和节目录制等服务。为了保护您和您孩子的身心健康及合法权益，根据国家广播电视总局颁布的《未成年人节目管理规定》的要求，我们制定了下述《声明》，请您务必仔细阅读并透彻理解《声明》内容，如您点击“同意”按键，即表示您接受并同意作出下述《声明》。</span> <br>
+        本人为XXX（即本人孩子的姓名，且本人确认填写会员信息时孩子的姓名与身份证明中的姓名一致，以下简称乙方）的【父亲/母亲】和法定监护人，不可撤销地同意接受上海炫动传播有限公司（以下简称甲方）的邀请，本人及乙方以表演者身份参加甲方旗下哈哈炫动卫视组织或参与的活动和相关的节目传播，录制和/或发行工作(以下统称 “活动”)。本人并代表乙方特此声明如下：<br>
+我们同意：甲方独家以任何方式录制并传播本人及乙方参加上述“活动”的任何言论、表演及相关形象（以下统称“表演”），甲方是“活动”和本人及乙方的“表演”的著作权、肖像权、邻接权和相关权利的唯一权利所有者及使用者，并有权授权第三方使用。且将无需向本人及乙方支付任何费用。本人及乙方在此自愿放弃对甲方行使作为表演者享有的任何人身和财产方面的权利。无需经本人同意，甲方或者经甲方授权的第三方有权对“表演”在任何形式的电视、广播、网络、报刊、图书等媒体永久播出或出版该节目的内容。甲方或者经甲方授权的第三方有权对 “表演”进行编辑并在全球发行并以任何方式永久使用“表演”或其片段以及本人及乙方的姓名、声音和可能在“活动”期间提供的本人及乙方形象和个人资料，无论该“表演”是否已经被录制。<br>
+本人已经或将自行承担费用，取得原始版权所有者（如表演节目的词曲作者等）的所有必要的许可。甲方无须就本人及乙方表演之节目向原始版权人支付任何费用。本人及乙方在“活动”中所发表的言论均为真实的且不会侵害或侵犯任何第三方的权利，由此引起的任何法律责任将由本人承担。本人不可撤销和无条件地放弃和永久免除本人（或者本人的受让方，代理人或者代表）及乙方可能有的针对甲方或其关联公司及其雇员、代理人或者代表，继承者和受让者的任何形式的已知或未知的责任主张、索赔和要求并同意承担甲方因该索赔或诉讼而产生的任何律师费和其它费用。<br>
+ 
+我们确认：甲方已充分告知，为“活动”和“表演”投保相应的保险、保险内容以及金额，本人保证本人及乙方遵守甲方的拍摄要求，如出现伤害事故，甲方将仅在保险公司理赔范围内承担相关责任。本人及乙方放弃对甲方的其他追索权利。<br>
+ 
+本人作为乙方的合法法定监护人，并已取得其他监护人之同意签署本声明。本人已向乙方充分解释本声明之内容。本声明自本人签署之日起生效并持续有效，本人和乙方均受以上所有条款的约束。
+`
+          }).then(() => {
+                  this.showregInforToast = true;
+            // this.doRegister();
+        }).catch(() => {
+          // on cancel
+        });
+       
+    },
     doRegister(){
-      if(this.loading == true){
-        return;
-      }
-      let obj={
-        cname:this.cname,
-        jzname:this.jzname,
-        school:this.school,
-        nj:this.nj,
-        bj:this.bj,
-        address:this.address,
-        mobile:this.mobile,
-        birthday:this.birthday,
-        sex:this.sex,
-        yzcode:this.yzcode,
-        area:this.area,
-      }
-      if(!this.cname){
+       if(!this.cname){
         Toast('请输入学生姓名')
         return
       }else if(!this.jzname){
@@ -424,13 +457,36 @@ export default {
         Toast('请输入正确的联系电话~')
         return;
       }
+      if(this.loading == true){
+        return;
+      }
+      
+      let obj={
+        cname:this.cname,
+        jzname:this.jzname,
+        school:this.school,
+        nj:this.nj,
+        bj:this.bj,
+        address:this.address,
+        mobile:this.mobile,
+        birthday:this.birthday,
+        sex:this.sex,
+        yzcode:this.yzcode,
+        area:this.area,
+      }
+      
       const data = this.parseData(obj);
-      this.loading = true
+        Toast.loading({
+          duration: 0,
+          forbidClick: true, // 禁用背景点击
+          message: '请求中...'
+         });
+      // this.loading = true
       fetchJsonp(`${url}/doRegister?uid=${this.uid}${data}`)
         .then((response) =>{
           return response.json()
         }).then((json) =>{
-          this.loading = false;
+                  Toast.clear();
           this.showregInforToast = false;
           this.hasReg =true;
           if(json.code ==0){
@@ -443,7 +499,8 @@ export default {
              Toast(json.message)
           }
         }).catch(function(ex) {
-          this.loading = false
+                  Toast.clear();
+
           console.log('parsing failed', ex)
         });
     },
@@ -658,6 +715,15 @@ img{
       transform:translate(-50%,-50%);
       .name{
         font-size:0.15rem;
+        position: relative;
+        span{
+          color:#fff;
+          font-size:0.12rem;
+          padding:0px 3px;
+          position: absolute;
+          margin-left: 10px;
+          top: 2px;
+        }
       }
       img{
         height: 0.75rem;
@@ -687,6 +753,8 @@ img{
     padding:0.1rem 0rem;
     div{
       display: flex;
+          align-items: flex-end;
+
       li{
         flex:1;
         text-align:center;

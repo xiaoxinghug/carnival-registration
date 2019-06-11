@@ -5,9 +5,15 @@
          <div class="relative">
             <div class="text">我的哈币<span class="point">{{mypoint}}</span> </div>
          </div>
-         <div class="select">
-              <v-select v-model="ctype" placeholder="请选择商品类型" :searchable="false" :options="options" @input="searchType"></v-select>
+         <div>
+           <div class="select" style="margin-left:5%">
+                <v-select v-model="ctype" placeholder="请选择商品类型" :searchable="false" :options="options" @input="searchType"></v-select>
+          </div>
+          <div class="select">
+                <v-select v-model="ptypeOption" placeholder="请选择积分范围" :searchable="false" :options="ptypeOptions" @input="searchPtype"></v-select>
+          </div>
          </div>
+         
       </div>
 
       <div class="content">
@@ -15,6 +21,7 @@
           v-model="loading"
           :finished="finished"
           finished-text="没有更多了"
+          loading-text="加载中..."
           @load="onLoad"
         >
           <div class="list" v-for="(list,index) in list" :key="index" @click="toDetail(list)">
@@ -43,9 +50,9 @@
         </van-list>  
       </div>
       
-      <div class="nothing" v-if="list.length == 0">
+      <!-- <div class="nothing" v-if="list.length == 0">
             什么都没有~
-      </div>
+      </div> -->
   </div>
 </template>
 
@@ -73,12 +80,24 @@ export default {
      currIndex:0,
      mypoint:"",
      uid:"",
-     pno:0,
-     pgs:9,
+     pno:-1,
+     pgs:8,
      loading: false,
      finished: false,
      ctype:"",
+     ptypeOption:null,
+     ptype:0,
      options:[],
+     ptypeOptions:[
+       {label:'不限',code:0},
+       {label:'0-100',code:1},
+       {label:'101-300',code:2},
+
+       {label:'301-500',code:3},
+
+       {label:'501-1000',code:4},
+       {label:'1000以上',code:5}
+     ],
      list:[
 
      ]
@@ -94,12 +113,13 @@ export default {
   
   methods: {
     init(){
-      this.goodsList();
+      // this.goodsList();
       this.getMyPoint();
       this.getType();
     },
     searchType(){
       this.pno=0;
+      this.finished = false;
       this.list = [];
       if(this.ctype == null){
           this.ctype = "";
@@ -109,6 +129,20 @@ export default {
       }
       this.goodsList();
       // this.ctype = "";
+    },
+    searchPtype(){
+      this.pno=0;
+      this.list = [];
+      this.finished = false;
+      if(this.ptypeOption == null){
+          this.ptype = 0;
+      }else{
+          this.ptype = this.ptypeOption.code;
+      }
+     
+      this.goodsList();
+      // console.log(this.ptype)
+      // this.searchPtype = 
     },
     toDetail(list){
       window.location.href = `/index.php/home/user/productDetails.html?id=${list.id}`;
@@ -156,7 +190,7 @@ export default {
     },
    
     goodsList(){
-      fetchJsonp(`${url}/goodsList?pno=${this.pno}&pgs=${this.pgs}&ctype=${this.ctype}`)
+      fetchJsonp(`${url}/goodsList?pno=${this.pno}&pgs=${this.pgs}&ctype=${this.ctype}&ptype=${this.ptype}`)
       .then((response) =>{
         return response.json()
       }).then((json) =>{
@@ -265,7 +299,8 @@ img{
   }
   .top{
     .select{
-      width:65%;
+      width:45%;
+      display: inline-block;
       margin:0 auto;
     }
     .relative{
